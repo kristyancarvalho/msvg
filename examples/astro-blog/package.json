@@ -1,0 +1,15 @@
+{
+  "name": "example-astro-blog",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@msvg/astro": "*",
+    "astro": "^4.11.0"
+  }
+}

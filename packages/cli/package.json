@@ -1,0 +1,31 @@
+{
+  "name": "@msvg/cli",
+  "version": "0.0.0",
+  "description": "MSVG command-line interface",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "msvg": "./dist/main.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsup src/index.ts src/main.ts --format esm --dts --out-dir dist --clean",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:snapshots": "vitest run --reporter=verbose"
+  },
+  "dependencies": {
+    "@msvg/core": "*",
+    "@msvg/svg": "*",
+    "commander": "^12.1.0",
+    "glob": "^11.0.0"
+  }
+}

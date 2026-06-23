@@ -1,0 +1,14 @@
+services:
+  msvg:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app:delegated
+      - msvg_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+
+volumes:
+  msvg_modules:
