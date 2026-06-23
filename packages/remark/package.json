@@ -1,0 +1,35 @@
+{
+  "name": "@msvg/remark",
+  "version": "0.0.0",
+  "description": "MSVG remark plugin for unified/remark pipelines",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --out-dir dist --clean",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:snapshots": "vitest run --reporter=verbose",
+    "test:integration": "vitest run --reporter=verbose"
+  },
+  "dependencies": {
+    "@msvg/core": "*",
+    "@msvg/svg": "*"
+  },
+  "peerDependencies": {
+    "unified": ">=11"
+  },
+  "devDependencies": {
+    "@types/mdast": "^4.0.0",
+    "remark": "^15.0.0",
+    "unified": "^11.0.0"
+  }
+}

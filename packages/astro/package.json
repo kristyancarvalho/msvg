@@ -1,0 +1,32 @@
+{
+  "name": "@msvg/astro",
+  "version": "0.0.0",
+  "description": "MSVG Astro integration",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --out-dir dist --clean",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --reporter=verbose",
+    "test:e2e": "vitest run --reporter=verbose"
+  },
+  "dependencies": {
+    "@msvg/remark": "*"
+  },
+  "peerDependencies": {
+    "astro": ">=4"
+  },
+  "devDependencies": {
+    "astro": "^4.11.0"
+  }
+}

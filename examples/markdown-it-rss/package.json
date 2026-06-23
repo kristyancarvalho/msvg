@@ -1,0 +1,13 @@
+{
+  "name": "example-markdown-it-rss",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@msvg/markdown-it": "*",
+    "markdown-it": "^14.1.0"
+  }
+}
