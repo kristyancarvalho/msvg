@@ -17,6 +17,7 @@
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:report": "vitest run --coverage --reporter=json --outputFile=vitest-report.json",
     "test:snapshots": "vitest run --reporter=verbose"
   },
   "dependencies": {

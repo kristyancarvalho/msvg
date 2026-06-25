@@ -16,6 +16,8 @@
     "test:e2e": "npm run test:e2e --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "assets:generate": "node scripts/generate-readme-assets.mjs",
+    "test:report": "npm run test:report --workspaces --if-present",
+    "quality:report": "npm run test:report && node scripts/quality-report.mjs",
     "verify": "npm run check && npm test && npm run test:coverage && npm run test:snapshots && npm run test:integration && npm run test:e2e && npm run build"
   },
   "devDependencies": {

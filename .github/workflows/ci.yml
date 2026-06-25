@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify and report quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build development image
+        run: docker compose build
+
+      - name: Install dependencies
+        run: docker compose run --rm msvg npm install
+
+      - name: Run verification gate
+        run: docker compose run --rm msvg npm run verify
+
+      - name: Generate quality report and badges
+        run: docker compose run --rm msvg npm run quality:report
+
+      - name: Upload quality report
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-report
+          path: .github/assets/badges/quality.json
+
+      - name: Refresh README badges
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" .github/assets/badges
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- .github/assets/badges; then
+            git add .github/assets/badges
+            git commit -m "ci/quality: refresh README badges [skip ci]"
+            git push origin HEAD:dev
+          else
+            echo "Badges already up to date."
+          fi
