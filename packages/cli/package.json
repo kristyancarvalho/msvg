@@ -2,6 +2,29 @@
   "name": "@msvg/cli",
   "version": "0.1.0",
   "description": "MSVG command-line interface",
+  "license": "MIT",
+  "author": "Kristyan Carvalho",
+  "homepage": "https://github.com/kristyancarvalho/msvg#readme",
+  "bugs": {
+    "url": "https://github.com/kristyancarvalho/msvg/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kristyancarvalho/msvg.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "markdown",
+    "svg",
+    "diagram",
+    "yaml",
+    "documentation",
+    "technical-writing",
+    "cli"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,7 +39,7 @@
   },
   "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
-    "build": "tsup src/index.ts src/main.ts --format esm --dts --out-dir dist --clean",
+    "build": "tsup",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
