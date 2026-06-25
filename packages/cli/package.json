@@ -1,6 +1,6 @@
 {
   "name": "@msvg/cli",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "MSVG command-line interface",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,8 +23,8 @@
     "test:snapshots": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@msvg/core": "*",
-    "@msvg/svg": "*",
+    "@msvg/core": "^0.1.0",
+    "@msvg/svg": "^0.1.0",
     "commander": "^12.1.0",
     "glob": "^11.0.0"
   }

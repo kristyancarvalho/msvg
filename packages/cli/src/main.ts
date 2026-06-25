@@ -16,7 +16,7 @@ async function runAndExit(task: Promise<{ exitCode: number; output: string }>): 
 
 const program = new Command();
 
-program.name("msvg").description("Render and validate MSVG diagrams").version("0.0.0");
+program.name("msvg").description("Render and validate MSVG diagrams").version("0.1.0");
 
 program
   .command("check")

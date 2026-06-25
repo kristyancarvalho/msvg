@@ -1,6 +1,6 @@
 {
   "name": "@msvg/svg",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "MSVG SVG layout engine and renderer",
   "type": "module",
   "main": "./dist/index.js",
@@ -20,6 +20,6 @@
     "test:snapshots": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@msvg/core": "*"
+    "@msvg/core": "^0.1.0"
   }
 }
