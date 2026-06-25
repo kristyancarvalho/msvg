@@ -1,0 +1,25 @@
+type: timeline
+title: "MSVG release path"
+description: "The path from the core parser to the first complete release."
+theme: dark
+
+events:
+  - at: "Phase 1"
+    title: "Core parser"
+    description: "Parse and validate MSVG declarations"
+    status: done
+
+  - at: "Phase 2"
+    title: "Renderer and themes"
+    description: "Generate static SVG for every diagram type"
+    status: done
+
+  - at: "Phase 3"
+    title: "Integrations and CLI"
+    description: "remark, markdown-it, Astro, and the command line"
+    status: done
+
+  - at: "0.1.0"
+    title: "First release"
+    description: "Documented, tested, and ready to use"
+    status: current

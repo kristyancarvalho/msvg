@@ -1,0 +1,31 @@
+type: flow
+title: "How MSVG renders a diagram"
+description: "Author text flows through parsing and layout into a static, accessible SVG asset."
+theme: paper
+direction: LR
+
+nodes:
+  markdown:
+    label: "Markdown"
+    description: "An msvg code block"
+    kind: input
+
+  core:
+    label: "@msvg/core"
+    description: "Parse and validate"
+    kind: process
+
+  svg:
+    label: "@msvg/svg"
+    description: "Layout and render"
+    kind: process
+
+  asset:
+    label: "SVG asset"
+    description: "Static accessible image"
+    kind: output
+
+edges:
+  - markdown -> core: "read"
+  - core -> svg: "validate"
+  - svg -> asset: "write"
