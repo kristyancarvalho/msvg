@@ -2,6 +2,31 @@
   "name": "@msvg/remark",
   "version": "0.1.0",
   "description": "MSVG remark plugin for unified/remark pipelines",
+  "license": "MIT",
+  "author": "Kristyan Carvalho",
+  "homepage": "https://github.com/kristyancarvalho/msvg#readme",
+  "bugs": {
+    "url": "https://github.com/kristyancarvalho/msvg/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kristyancarvalho/msvg.git",
+    "directory": "packages/remark"
+  },
+  "keywords": [
+    "markdown",
+    "svg",
+    "diagram",
+    "yaml",
+    "documentation",
+    "technical-writing",
+    "remark",
+    "unified",
+    "mdast"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

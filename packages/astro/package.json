@@ -2,6 +2,30 @@
   "name": "@msvg/astro",
   "version": "0.1.0",
   "description": "MSVG Astro integration",
+  "license": "MIT",
+  "author": "Kristyan Carvalho",
+  "homepage": "https://github.com/kristyancarvalho/msvg#readme",
+  "bugs": {
+    "url": "https://github.com/kristyancarvalho/msvg/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kristyancarvalho/msvg.git",
+    "directory": "packages/astro"
+  },
+  "keywords": [
+    "markdown",
+    "svg",
+    "diagram",
+    "yaml",
+    "documentation",
+    "technical-writing",
+    "astro",
+    "astro-integration"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
