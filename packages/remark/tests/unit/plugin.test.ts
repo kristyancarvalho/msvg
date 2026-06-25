@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Root } from "mdast";
+import { remark } from "remark";
 import { remarkMSVG } from "../../src/plugin.js";
 
 const diagram = `type: flow
@@ -11,8 +12,7 @@ edges:
   - a -> b`;
 
 async function run(tree: Root, options = {}) {
-  const attach = remarkMSVG(options);
-  const transform = attach() as (tree: Root, file: { path?: string }) => Promise<void>;
+  const transform = remarkMSVG(options) as unknown as (tree: Root, file: { path?: string }) => Promise<void>;
   await transform(tree, { path: "post.md" });
   return tree;
 }
@@ -50,6 +50,15 @@ describe("remarkMSVG", () => {
     };
     await run(tree);
     expect(tree.children[0]?.type).toBe("code");
+  });
+
+  it("transforms msvg fences through a real unified pipeline", async () => {
+    const source = "```msvg\n" + diagram + "\n```\n";
+    const file = await remark().use(remarkMSVG, { output: "inline" }).process(source);
+    const output = String(file);
+    expect(output).toContain("<svg");
+    expect(output).toContain("<title");
+    expect(output).not.toContain("```msvg");
   });
 
   it("collects diagnostics for invalid diagrams", async () => {
