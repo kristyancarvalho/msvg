@@ -7,6 +7,12 @@
 
 <p align="center">Turn small, readable text into static, accessible SVG diagrams.</p>
 
+<p align="center">
+  <a href="https://github.com/kristyancarvalho/msvg/actions/workflows/ci.yml"><img alt="CI status" src=".github/assets/badges/tests.svg"></a>
+  <a href=".github/assets/badges/quality.json"><img alt="Test coverage" src=".github/assets/badges/coverage.svg"></a>
+  <a href=".github/assets/badges/quality.json"><img alt="Percentage of tests passed" src=".github/assets/badges/tests-passed.svg"></a>
+</p>
+
 # MSVG
 
 MSVG turns small, readable text descriptions into static SVG diagrams. You write a short block of YAML inside your Markdown, and MSVG produces a clean, accessible picture: a flowchart, a mind map, an architecture diagram, a timeline, and more.
@@ -568,6 +574,25 @@ docker compose run --rm msvg npm run assets:generate
 ```
 
 The generator reads every `*.msvg.yml` file in the source directory, validates it with `@msvg/core`, renders it with `@msvg/svg`, and writes a matching `.svg` next to the others. Each source picks its own theme through the `theme` field, so the gallery stays in sync with the library.
+
+## Continuous integration and quality
+
+Every push and pull request runs the GitHub Actions workflow in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). It builds the same Docker image you use locally and runs the full verification gate inside it, so CI and local development behave the same way.
+
+The workflow also produces the quality widgets shown at the top of this README. Coverage and test counts are read straight from the test run, with no third-party badge service:
+
+```bash
+docker compose run --rm msvg npm run quality:report
+```
+
+This runs every package's tests with coverage, then [`scripts/quality-report.mjs`](scripts/quality-report.mjs) aggregates the results and writes self-contained SVG badges and a machine-readable summary into [`.github/assets/badges`](.github/assets/badges):
+
+- `tests.svg` shows whether the suite is passing.
+- `coverage.svg` shows the overall line coverage percentage.
+- `tests-passed.svg` shows the percentage of tests that passed.
+- `quality.json` holds the same numbers, including a per-package breakdown.
+
+On pushes to `dev`, the workflow refreshes these badge files automatically so the README always reflects the latest run.
 
 ## Development documentation
 
