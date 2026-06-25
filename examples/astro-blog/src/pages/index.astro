@@ -1,0 +1,17 @@
+---
+import { Content, frontmatter } from "../content/post.md";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{frontmatter.title}</title>
+  </head>
+  <body>
+    <main>
+      <h1>{frontmatter.title}</h1>
+      <Content />
+    </main>
+  </body>
+</html>
