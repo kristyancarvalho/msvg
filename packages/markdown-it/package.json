@@ -1,6 +1,6 @@
 {
   "name": "@msvg/markdown-it",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "MSVG markdown-it plugin",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,8 +21,8 @@
     "test:integration": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@msvg/core": "*",
-    "@msvg/svg": "*"
+    "@msvg/core": "^0.1.0",
+    "@msvg/svg": "^0.1.0"
   },
   "peerDependencies": {
     "markdown-it": ">=14"

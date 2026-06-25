@@ -1,6 +1,6 @@
 {
   "name": "@msvg/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "MSVG core parser, normalizer, and validator",
   "type": "module",
   "main": "./dist/index.js",
