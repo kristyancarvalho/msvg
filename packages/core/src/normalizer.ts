@@ -1,5 +1,6 @@
 import type {
   DiagramDocument,
+  DiagramBase,
   DiagramType,
   FlowDiagram,
   FlowNode,
@@ -54,7 +55,7 @@ function extractBase(
   raw: Record<string, unknown>,
   filePath?: string
 ): {
-  base: Pick<FlowDiagram, "type" | "title" | "description" | "caption" | "theme" | "id">;
+  base: DiagramBase;
   diagnostics: MSVGDiagnostic[];
 } {
   const diagnostics: MSVGDiagnostic[] = [];
@@ -192,9 +193,7 @@ function normalizeFlowDiagram(
     const hasBlockingErrors = allDiag.some(
       (d) =>
         d.severity === "error" &&
-        [DiagCodes.MISSING_TYPE, DiagCodes.UNKNOWN_TYPE, DiagCodes.MISSING_TITLE].includes(
-          d.code as (typeof DiagCodes)[keyof typeof DiagCodes]
-        )
+        new Set<string>([DiagCodes.MISSING_TYPE, DiagCodes.UNKNOWN_TYPE, DiagCodes.MISSING_TITLE]).has(d.code)
     );
     if (hasBlockingErrors) {
       return { diagram: null, diagnostics: allDiag };
@@ -256,9 +255,12 @@ function normalizeMindmapDiagram(
   const hasBlockingErrors = allDiag.some(
     (d) =>
       d.severity === "error" &&
-      [DiagCodes.MISSING_TYPE, DiagCodes.UNKNOWN_TYPE, DiagCodes.MISSING_TITLE, DiagCodes.EMPTY_DIAGRAM].includes(
-        d.code as (typeof DiagCodes)[keyof typeof DiagCodes]
-      )
+      new Set<string>([
+        DiagCodes.MISSING_TYPE,
+        DiagCodes.UNKNOWN_TYPE,
+        DiagCodes.MISSING_TITLE,
+        DiagCodes.EMPTY_DIAGRAM,
+      ]).has(d.code)
   );
   if (hasBlockingErrors && branches.length === 0) {
     return { diagram: null, diagnostics: allDiag };

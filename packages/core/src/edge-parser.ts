@@ -11,7 +11,7 @@ const SHORTHAND_UNQUOTED_PATTERN =
 export interface EdgeParseResult {
   from: string;
   to: string;
-  label?: string;
+  label?: string | undefined;
 }
 
 export interface ParseEdgeOutcome {
