@@ -6,3 +6,6 @@ coverage/
 /specs/
 .DS_Store
 *.log
+.astro/
+examples/astro-blog/src/env.d.ts
+examples/astro-blog/public/msvg/
