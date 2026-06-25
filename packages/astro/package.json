@@ -1,6 +1,6 @@
 {
   "name": "@msvg/astro",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "MSVG Astro integration",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,7 +21,7 @@
     "test:e2e": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@msvg/remark": "*"
+    "@msvg/remark": "^0.1.0"
   },
   "peerDependencies": {
     "astro": ">=4"
