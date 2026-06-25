@@ -24,6 +24,9 @@ jobs:
       - name: Build development image
         run: docker compose build
 
+      - name: Align workspace ownership for container user
+        run: sudo chown -R 1000:1000 .
+
       - name: Install dependencies
         run: docker compose run --rm msvg npm install
 
@@ -42,7 +45,8 @@ jobs:
       - name: Refresh README badges
         if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
         run: |
-          sudo chown -R "$(id -u):$(id -g)" .github/assets/badges
+          sudo chown -R "$(id -u):$(id -g)" .
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if ! git diff --quiet -- .github/assets/badges; then
