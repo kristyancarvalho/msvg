@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: docker compose run --rm msvg npm install
 
+      - name: Build packages
+        run: docker compose run --rm msvg npm run build
+
       - name: Run verification gate
         run: docker compose run --rm msvg npm run verify
 
