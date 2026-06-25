@@ -33,39 +33,37 @@ function lineFromNode(node: Record<string, unknown>): number | undefined {
   return position?.start?.line;
 }
 
-export function remarkMSVG(options: RemarkMSVGOptions = {}): Plugin<[], Root> {
-  return function transformer() {
-    return async function transform(tree: Root, file) {
-      const diagnostics = options.diagnostics ?? [];
-      const sourcePath = options.sourcePath ?? file.path;
-      const tasks = visitCodeNodes(tree as unknown as ParentNode, async (node, index, parent) => {
-        const lang = typeof node["lang"] === "string" ? node["lang"] : "";
-        if (lang.trim().toLowerCase() !== "msvg") return;
-        const value = typeof node["value"] === "string" ? node["value"] : "";
-        const parsed = parseAndValidate(value, { filePath: sourcePath });
-        const line = lineFromNode(node);
-        diagnostics.push(...parsed.diagnostics.map((diag) => ({ ...diag, line: diag.line ?? line })));
-        if (!parsed.valid || parsed.diagram === null) {
-          const message = escapeHtml(parsed.diagnostics.map((diag) => `${diag.severity}: ${diag.message}`).join("\n"));
-          parent.children![index] = {
-            type: "html",
-            value: `<pre class="msvg-error">${message}</pre>`,
-          };
-          return;
-        }
-        const rendered = renderSvg(parsed.diagram);
-        diagnostics.push(...rendered.diagnostics);
-        if (options.output === "inline") {
-          parent.children![index] = { type: "html", value: rendered.svg };
-          return;
-        }
-        const asset = await emitAsset(parsed.diagram.title, rendered.svg, { ...options, sourcePath });
+export const remarkMSVG: Plugin<[RemarkMSVGOptions?], Root> = (options = {}) => {
+  return async (tree, file): Promise<void> => {
+    const diagnostics = options.diagnostics ?? [];
+    const sourcePath = options.sourcePath ?? file.path;
+    const tasks = visitCodeNodes(tree as unknown as ParentNode, async (node, index, parent) => {
+      const lang = typeof node["lang"] === "string" ? node["lang"] : "";
+      if (lang.trim().toLowerCase() !== "msvg") return;
+      const value = typeof node["value"] === "string" ? node["value"] : "";
+      const parsed = parseAndValidate(value, { filePath: sourcePath });
+      const line = lineFromNode(node);
+      diagnostics.push(...parsed.diagnostics.map((diag) => ({ ...diag, line: diag.line ?? line })));
+      if (!parsed.valid || parsed.diagram === null) {
+        const message = escapeHtml(parsed.diagnostics.map((diag) => `${diag.severity}: ${diag.message}`).join("\n"));
         parent.children![index] = {
           type: "html",
-          value: imageHtml(asset.publicUrl, parsed.diagram.title, parsed.diagram.caption, parsed.diagram.type),
+          value: `<pre class="msvg-error">${message}</pre>`,
         };
-      });
-      await Promise.all(tasks);
-    };
+        return;
+      }
+      const rendered = renderSvg(parsed.diagram);
+      diagnostics.push(...rendered.diagnostics);
+      if (options.output === "inline") {
+        parent.children![index] = { type: "html", value: rendered.svg };
+        return;
+      }
+      const asset = await emitAsset(parsed.diagram.title, rendered.svg, { ...options, sourcePath });
+      parent.children![index] = {
+        type: "html",
+        value: imageHtml(asset.publicUrl, parsed.diagram.title, parsed.diagram.caption, parsed.diagram.type),
+      };
+    });
+    await Promise.all(tasks);
   };
-}
+};
