@@ -520,7 +520,12 @@ Do not run `npm`, `node`, `npx`, `tsc`, `vitest`, or `astro` directly on your ho
 
 ## Development documentation
 
-Internal development notes, architecture drafts, and planning material live in the `/specs` directory. That directory is intentionally ignored by Git and is never published. Public, user-facing documentation lives in this README and in each package's README. Contributors should not commit anything under `/specs`.
+MSVG keeps documentation in two places, and it helps to know which is which:
+
+- **Public documentation** lives in this README and in each package's README. It is written for people who use MSVG, and it is published to npm and GitHub.
+- **Internal development notes** live in the `/specs` directory: architecture drafts, implementation plans, and local planning material. The `/specs` directory is intentionally ignored by Git and is never published.
+
+Contributors should not commit anything under `/specs`. Anything meant for users belongs in a README instead. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full documentation workflow.
 
 ## Versioning
 
