@@ -288,13 +288,31 @@ The root `README.md` should explain:
 - How to run the Docker workflow
 - How to read common errors
 
-Development-only documentation belongs in:
+### Where documentation lives
 
-```text
-/specs
+MSVG keeps documentation in two separate homes. Knowing which one to use keeps public docs clean and private notes out of the published packages.
+
+| Home | Audience | What goes here | Versioned? | Published? |
+|---|---|---|---|---|
+| `README.md` and package `README.md` files | Users of MSVG | What the project is, installation, usage, examples, supported diagrams, accessibility, security | Yes | Yes, on npm and GitHub |
+| `/specs` | Maintainers and agents working on MSVG | Implementation plans, architecture drafts, local agent prompts, session handoffs, internal planning, temporary notes | No | No |
+
+### The `/specs` rule
+
+`/specs` is for local development notes only. It is intentionally ignored by Git and is never published.
+
+- `/specs` is listed in `.gitignore`, so its files are not tracked.
+- Do not commit anything under `/specs`. If you run `git status` and see `/specs` files, leave them untracked.
+- Do not move private or internal notes from `/specs` into public documentation. Internal planning, drafts, and agent prompts stay local.
+- When you want users to read something, write it in `README.md` or a package `README.md`, not in `/specs`.
+
+You can confirm that `/specs` is ignored at any time:
+
+```bash
+git check-ignore -v specs
 ```
 
-The `/specs` directory must not be versioned. Use it for implementation plans, local agent prompts, architecture drafts, and temporary development notes.
+If that command prints a `.gitignore` rule, the directory is correctly ignored and safe to use for private notes.
 
 ## Pull Requests
 
