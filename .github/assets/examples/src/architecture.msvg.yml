@@ -1,0 +1,62 @@
+type: architecture
+title: "The MSVG package ecosystem"
+description: "How the MSVG packages connect, from authoring through rendering to integrations."
+theme: neutral
+direction: LR
+
+groups:
+  authoring:
+    label: "Authoring"
+    components:
+      - markdown
+      - cli
+
+  rendering:
+    label: "Rendering"
+    components:
+      - core
+      - svg
+
+  integrations:
+    label: "Integrations"
+    components:
+      - astro
+      - remark
+      - markdownIt
+
+components:
+  markdown:
+    label: "Markdown"
+    kind: content
+
+  cli:
+    label: "@msvg/cli"
+    kind: build
+
+  core:
+    label: "@msvg/core"
+    kind: service
+
+  svg:
+    label: "@msvg/svg"
+    kind: output
+
+  astro:
+    label: "@msvg/astro"
+    kind: external
+
+  remark:
+    label: "@msvg/remark"
+    kind: external
+
+  markdownIt:
+    label: "@msvg/markdown-it"
+    kind: external
+
+connections:
+  - markdown -> core: "parse"
+  - cli -> core: "validate"
+  - core -> svg: "render"
+  - astro -> remark: "uses"
+  - remark -> core: "parse"
+  - markdownIt -> core: "parse"
