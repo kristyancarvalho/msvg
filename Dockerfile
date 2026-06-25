@@ -1,4 +1,4 @@
 FROM node:22-alpine
 WORKDIR /app
-RUN addgroup -S msvg && adduser -S -G msvg msvg
-USER msvg
+RUN mkdir -p /app/node_modules && chown -R node:node /app
+USER node
