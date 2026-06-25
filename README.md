@@ -1,3 +1,12 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo/msvg-logo-dark.svg">
+    <img alt="MSVG — Markdown to SVG diagrams" src=".github/assets/logo/msvg-logo-light.svg" width="320">
+  </picture>
+</p>
+
+<p align="center">Turn small, readable text into static, accessible SVG diagrams.</p>
+
 # MSVG
 
 MSVG turns small, readable text descriptions into static SVG diagrams. You write a short block of YAML inside your Markdown, and MSVG produces a clean, accessible picture: a flowchart, a mind map, an architecture diagram, a timeline, and more.
