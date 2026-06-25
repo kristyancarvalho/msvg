@@ -1,0 +1,12 @@
+export { extractMsvgFences } from "./fence-extractor.js";
+export type { MsvgFence } from "./fence-extractor.js";
+export { resolveInputFiles } from "./glob.js";
+export { assertInside, safeOutputPath } from "./path-safety.js";
+export { checkCommand } from "./commands/check.js";
+export type { CheckOptions, CommandResult } from "./commands/check.js";
+export { buildCommand } from "./commands/build.js";
+export type { BuildOptions, BuildResult } from "./commands/build.js";
+export { renderCommand } from "./commands/render.js";
+export type { RenderOptions, RenderResult } from "./commands/render.js";
+export { inspectCommand } from "./commands/inspect.js";
+export type { InspectOptions, InspectResult } from "./commands/inspect.js";

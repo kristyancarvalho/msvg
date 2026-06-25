@@ -13,20 +13,20 @@ export interface MSVGDiagnostic {
   code: string;
   severity: Severity;
   message: string;
-  filePath?: string;
-  line?: number;
-  column?: number;
-  diagramId?: string;
-  hint?: string;
+  filePath?: string | undefined;
+  line?: number | undefined;
+  column?: number | undefined;
+  diagramId?: string | undefined;
+  hint?: string | undefined;
 }
 
 export interface DiagramBase {
   type: DiagramType;
   title: string;
-  description?: string;
-  caption?: string;
-  theme?: string | Record<string, string>;
-  id?: string;
+  description?: string | undefined;
+  caption?: string | undefined;
+  theme?: string | Record<string, string> | undefined;
+  id?: string | undefined;
 }
 
 export type NodeKind =
@@ -41,24 +41,24 @@ export type NodeKind =
 export interface FlowNode {
   id: string;
   label: string;
-  description?: string;
-  kind?: NodeKind;
+  description?: string | undefined;
+  kind?: NodeKind | undefined;
 }
 
 export interface FlowEdge {
   from: string;
   to: string;
-  label?: string;
+  label?: string | undefined;
 }
 
 export type FlowDirection = "LR" | "RL" | "TB" | "BT";
 
 export interface FlowDiagram extends DiagramBase {
   type: "flow";
-  direction?: FlowDirection;
+  direction?: FlowDirection | undefined;
   nodes: FlowNode[];
   edges: FlowEdge[];
-  groups?: FlowGroup[];
+  groups?: FlowGroup[] | undefined;
 }
 
 export interface FlowGroup {
@@ -82,13 +82,13 @@ export type LayerDirection = "top-down" | "bottom-up";
 
 export interface Layer {
   label: string;
-  note?: string;
-  emphasis?: boolean;
+  note?: string | undefined;
+  emphasis?: boolean | undefined;
 }
 
 export interface LayersDiagram extends DiagramBase {
   type: "layers";
-  direction?: LayerDirection;
+  direction?: LayerDirection | undefined;
   layers: Layer[];
 }
 
@@ -97,14 +97,14 @@ export type ColumnTone = "neutral" | "positive" | "warning" | "negative";
 export interface ComparisonColumn {
   id: string;
   label: string;
-  tone?: ColumnTone;
+  tone?: ColumnTone | undefined;
   items: string[];
 }
 
 export interface ComparisonDiagram extends DiagramBase {
   type: "comparison";
   columns: ComparisonColumn[];
-  verdict?: string;
+  verdict?: string | undefined;
 }
 
 export interface SequenceParticipant {
@@ -116,7 +116,7 @@ export interface SequenceMessage {
   from: string;
   to: string;
   label: string;
-  note?: string;
+  note?: string | undefined;
 }
 
 export interface SequenceDiagram extends DiagramBase {
@@ -130,8 +130,8 @@ export type EventStatus = "past" | "current" | "future" | "risk" | "done";
 export interface TimelineEvent {
   at: string;
   title: string;
-  description?: string;
-  status?: EventStatus;
+  description?: string | undefined;
+  status?: EventStatus | undefined;
 }
 
 export interface TimelineDiagram extends DiagramBase {
@@ -153,7 +153,7 @@ export type ArchitectureDirection = "LR" | "RL" | "TB" | "BT";
 export interface ArchitectureComponent {
   id: string;
   label: string;
-  kind?: ComponentKind;
+  kind?: ComponentKind | undefined;
 }
 
 export interface ArchitectureGroup {
@@ -165,12 +165,12 @@ export interface ArchitectureGroup {
 export interface ArchitectureConnection {
   from: string;
   to: string;
-  label?: string;
+  label?: string | undefined;
 }
 
 export interface ArchitectureDiagram extends DiagramBase {
   type: "architecture";
-  direction?: ArchitectureDirection;
+  direction?: ArchitectureDirection | undefined;
   components: ArchitectureComponent[];
   groups: ArchitectureGroup[];
   connections: ArchitectureConnection[];
@@ -186,8 +186,8 @@ export type DiagramDocument =
   | ArchitectureDiagram;
 
 export interface ParseOptions {
-  filePath?: string;
-  allowAnchors?: boolean;
+  filePath?: string | undefined;
+  allowAnchors?: boolean | undefined;
 }
 
 export interface ParseResult {
@@ -196,7 +196,7 @@ export interface ParseResult {
 }
 
 export interface NormalizeOptions {
-  filePath?: string;
+  filePath?: string | undefined;
 }
 
 export interface NormalizeResult {
@@ -205,8 +205,8 @@ export interface NormalizeResult {
 }
 
 export interface ValidateOptions {
-  filePath?: string;
-  warnUnknownFields?: boolean;
+  filePath?: string | undefined;
+  warnUnknownFields?: boolean | undefined;
 }
 
 export interface ValidationResult {
