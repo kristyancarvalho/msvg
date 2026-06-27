@@ -1,4 +1,4 @@
-import type { FlowDiagram, FlowNode, FlowEdge, MSVGDiagnostic } from "@msvg/core";
+import type { FlowDiagram, FlowNode, FlowEdge, MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import type { ResolvedTheme } from "../theme.js";
 import {
   wrapText,
@@ -21,7 +21,7 @@ import {
   kindStroke,
 } from "../primitives.js";
 import { escapeXml, escapeAttr, safeSvgId } from "../escaping.js";
-import { warnDiag } from "@msvg/core";
+import { warnDiag } from "@markdown-utils/msvg-core";
 
 const PAD = 32;
 const BOX_PAD_X = 18;

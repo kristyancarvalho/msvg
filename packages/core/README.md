@@ -1,4 +1,4 @@
-# @msvg/core
+# @markdown-utils/msvg-core
 
 The core of MSVG. This package reads the MSVG language (YAML written inside Markdown `msvg` blocks or standalone files), turns it into a normalized, fully typed diagram model, and validates it. It has no rendering code and no dependency on SVG, Astro, remark, markdown-it, or the CLI.
 
@@ -7,7 +7,7 @@ MSVG turns small text descriptions into static, accessible SVG diagrams for tech
 ## Installation
 
 ```bash
-npm install @msvg/core
+npm install @markdown-utils/msvg-core
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ npm install @msvg/core
 The simplest entry point is `parseAndValidate`. It parses the source, normalizes it, validates it, and returns the diagram plus diagnostics.
 
 ```ts
-import { parseAndValidate } from "@msvg/core";
+import { parseAndValidate } from "@markdown-utils/msvg-core";
 
 const result = parseAndValidate(`
 type: flow

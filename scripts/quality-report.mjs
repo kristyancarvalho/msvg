@@ -89,7 +89,7 @@ const perPackage = [];
 for (const name of packages) {
   const coverage = await readJson(join(root, "packages", name, "coverage", "coverage-summary.json"));
   const report = await readJson(join(root, "packages", name, "vitest-report.json"));
-  const entry = { package: `@msvg/${name}` };
+  const entry = { package: `@markdown-utils/msvg-${name}` };
   if (coverage && coverage.total) {
     for (const key of ["lines", "statements", "functions", "branches"]) {
       const metric = coverage.total[key];

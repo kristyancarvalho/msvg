@@ -7,7 +7,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
-    "@msvg/core": "*",
-    "@msvg/svg": "*"
+    "@markdown-utils/msvg-core": "*",
+    "@markdown-utils/msvg-svg": "*"
   }
 }

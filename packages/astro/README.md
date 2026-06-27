@@ -1,13 +1,13 @@
-# @msvg/astro
+# @markdown-utils/msvg-astro
 
-An Astro integration for MSVG. It wires the [`@msvg/remark`](../remark/README.md) plugin into your Astro build so that any Markdown post can contain `msvg` diagram blocks. During the build, diagrams become static SVG assets in your public directory, with no client-side JavaScript.
+An Astro integration for MSVG. It wires the [`@markdown-utils/msvg-remark`](../remark/README.md) plugin into your Astro build so that any Markdown post can contain `msvg` diagram blocks. During the build, diagrams become static SVG assets in your public directory, with no client-side JavaScript.
 
 MSVG turns small text descriptions into static, accessible SVG diagrams for technical writing. See the [project README](../../README.md) for the full picture.
 
 ## Installation
 
 ```bash
-npm install @msvg/astro
+npm install @markdown-utils/msvg-astro
 ```
 
 `astro` is a peer dependency.
@@ -16,7 +16,7 @@ npm install @msvg/astro
 
 ```js
 import { defineConfig } from "astro/config";
-import msvgSvg from "@msvg/astro";
+import msvgSvg from "@markdown-utils/msvg-astro";
 
 export default defineConfig({
   integrations: [

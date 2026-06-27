@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
-import type { MSVGDiagnostic } from "@msvg/core";
-import { parseAndValidate, hasErrors } from "@msvg/core";
+import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
+import { parseAndValidate, hasErrors } from "@markdown-utils/msvg-core";
 import { extractMsvgFences } from "../fence-extractor.js";
 import { resolveInputFiles } from "../glob.js";
 

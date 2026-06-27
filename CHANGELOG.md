@@ -8,12 +8,12 @@ The first release of MSVG. It turns small YAML descriptions written inside Markd
 
 ### Packages
 
-- `@msvg/core`: parser, normalizer, and validator for the MSVG language, with structured diagnostics and stable TypeScript types.
-- `@msvg/svg`: deterministic layout and accessible static SVG rendering, with built-in `paper`, `neutral`, `mono`, and `dark` themes.
-- `@msvg/remark`: remark plugin that renders `msvg` fenced code blocks in unified/remark pipelines, in asset or inline mode.
-- `@msvg/markdown-it`: markdown-it plugin that renders `msvg` fences, with RSS-safe asset output by default.
-- `@msvg/astro`: Astro integration that wires the remark plugin into static builds and emits SVG assets.
-- `@msvg/cli`: command-line tool with `check`, `build`, `render`, and `inspect` commands and JSON output for CI.
+- `@markdown-utils/msvg-core`: parser, normalizer, and validator for the MSVG language, with structured diagnostics and stable TypeScript types.
+- `@markdown-utils/msvg-svg`: deterministic layout and accessible static SVG rendering, with built-in `paper`, `neutral`, `mono`, and `dark` themes.
+- `@markdown-utils/msvg-remark`: remark plugin that renders `msvg` fenced code blocks in unified/remark pipelines, in asset or inline mode.
+- `@markdown-utils/msvg-markdown-it`: markdown-it plugin that renders `msvg` fences, with RSS-safe asset output by default.
+- `@markdown-utils/msvg-astro`: Astro integration that wires the remark plugin into static builds and emits SVG assets.
+- `@markdown-utils/msvg-cli`: command-line tool with `check`, `build`, `render`, and `inspect` commands and JSON output for CI.
 
 ### Features
 

@@ -1,5 +1,5 @@
 {
-  "name": "@msvg/remark",
+  "name": "@markdown-utils/msvg-remark",
   "version": "0.1.0",
   "description": "MSVG remark plugin for unified/remark pipelines",
   "license": "MIT",
@@ -25,7 +25,8 @@
     "mdast"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "type": "module",
   "main": "./dist/index.js",
@@ -47,8 +48,8 @@
     "test:integration": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@msvg/core": "^0.1.0",
-    "@msvg/svg": "^0.1.0"
+    "@markdown-utils/msvg-core": "^0.1.0",
+    "@markdown-utils/msvg-svg": "^0.1.0"
   },
   "peerDependencies": {
     "unified": ">=11"

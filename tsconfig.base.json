@@ -5,12 +5,12 @@
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "paths": {
-      "@msvg/core": ["packages/core/src/index.ts"],
-      "@msvg/svg": ["packages/svg/src/index.ts"],
-      "@msvg/remark": ["packages/remark/src/index.ts"],
-      "@msvg/markdown-it": ["packages/markdown-it/src/index.ts"],
-      "@msvg/astro": ["packages/astro/src/index.ts"],
-      "@msvg/cli": ["packages/cli/src/index.ts"]
+      "@markdown-utils/msvg-core": ["packages/core/src/index.ts"],
+      "@markdown-utils/msvg-svg": ["packages/svg/src/index.ts"],
+      "@markdown-utils/msvg-remark": ["packages/remark/src/index.ts"],
+      "@markdown-utils/msvg-markdown-it": ["packages/markdown-it/src/index.ts"],
+      "@markdown-utils/msvg-astro": ["packages/astro/src/index.ts"],
+      "@markdown-utils/msvg-cli": ["packages/cli/src/index.ts"]
     },
     "lib": ["ES2022"],
     "declaration": true,

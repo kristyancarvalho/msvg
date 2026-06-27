@@ -1,5 +1,5 @@
 import MarkdownIt from "markdown-it";
-import { msvgMarkdownIt } from "@msvg/markdown-it";
+import { msvgMarkdownIt } from "@markdown-utils/msvg-markdown-it";
 
 const markdown = `
 # Release notes

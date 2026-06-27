@@ -1,5 +1,5 @@
 {
-  "name": "@msvg/astro",
+  "name": "@markdown-utils/msvg-astro",
   "version": "0.1.0",
   "description": "MSVG Astro integration",
   "license": "MIT",
@@ -24,7 +24,8 @@
     "astro-integration"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "type": "module",
   "main": "./dist/index.js",
@@ -46,7 +47,7 @@
     "test:e2e": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@msvg/remark": "^0.1.0"
+    "@markdown-utils/msvg-remark": "^0.1.0"
   },
   "peerDependencies": {
     "astro": ">=4"

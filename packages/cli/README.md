@@ -1,4 +1,4 @@
-# @msvg/cli
+# @markdown-utils/msvg-cli
 
 The MSVG command-line tool. Use it to validate, build, render, and inspect diagrams outside any framework. It finds `msvg` blocks in your Markdown files, validates every diagram, and can generate static SVG assets.
 
@@ -7,7 +7,7 @@ MSVG turns small text descriptions into static, accessible SVG diagrams for tech
 ## Installation
 
 ```bash
-npm install @msvg/cli
+npm install @markdown-utils/msvg-cli
 ```
 
 ## Commands
@@ -51,7 +51,7 @@ Every command exits with a non-zero status when there are errors, so it works we
 The command functions are also exported for direct use.
 
 ```ts
-import { checkCommand, buildCommand, renderCommand, inspectCommand } from "@msvg/cli";
+import { checkCommand, buildCommand, renderCommand, inspectCommand } from "@markdown-utils/msvg-cli";
 
 const result = await checkCommand(["content/**/*.md"]);
 process.exitCode = result.exitCode;

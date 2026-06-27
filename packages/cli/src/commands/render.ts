@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import type { MSVGDiagnostic } from "@msvg/core";
-import { hasErrors, parseAndValidate } from "@msvg/core";
-import { renderSvg } from "@msvg/svg";
+import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
+import { hasErrors, parseAndValidate } from "@markdown-utils/msvg-core";
+import { renderSvg } from "@markdown-utils/msvg-svg";
 
 export interface RenderOptions {
   out?: string | undefined;

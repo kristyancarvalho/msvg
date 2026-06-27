@@ -14,37 +14,37 @@
   },
   "packages": [
     {
-      "package": "@msvg/core",
+      "package": "@markdown-utils/msvg-core",
       "lines": 88.9,
       "tests": 83,
       "testsPassed": 83
     },
     {
-      "package": "@msvg/svg",
+      "package": "@markdown-utils/msvg-svg",
       "lines": 93.77,
       "tests": 162,
       "testsPassed": 162
     },
     {
-      "package": "@msvg/remark",
+      "package": "@markdown-utils/msvg-remark",
       "lines": 90.07,
       "tests": 10,
       "testsPassed": 10
     },
     {
-      "package": "@msvg/markdown-it",
+      "package": "@markdown-utils/msvg-markdown-it",
       "lines": 74.69,
       "tests": 4,
       "testsPassed": 4
     },
     {
-      "package": "@msvg/astro",
+      "package": "@markdown-utils/msvg-astro",
       "lines": 100,
       "tests": 2,
       "testsPassed": 2
     },
     {
-      "package": "@msvg/cli",
+      "package": "@markdown-utils/msvg-cli",
       "lines": 95.8,
       "tests": 15,
       "testsPassed": 15

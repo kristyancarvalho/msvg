@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import msvgSvg from "@msvg/astro";
+import msvgSvg from "@markdown-utils/msvg-astro";
 
 export default defineConfig({
   integrations: [

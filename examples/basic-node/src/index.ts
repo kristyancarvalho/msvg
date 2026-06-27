@@ -1,5 +1,5 @@
-import { parseAndValidate } from "@msvg/core";
-import { renderSvg } from "@msvg/svg";
+import { parseAndValidate } from "@markdown-utils/msvg-core";
+import { renderSvg } from "@markdown-utils/msvg-svg";
 
 const source = `
 type: flow

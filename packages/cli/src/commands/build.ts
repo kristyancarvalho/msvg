@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, relative } from "node:path";
-import type { MSVGDiagnostic } from "@msvg/core";
-import { hasErrors, parseAndValidate } from "@msvg/core";
-import { renderSvg } from "@msvg/svg";
+import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
+import { hasErrors, parseAndValidate } from "@markdown-utils/msvg-core";
+import { renderSvg } from "@markdown-utils/msvg-svg";
 import { extractMsvgFences } from "../fence-extractor.js";
 import { resolveInputFiles } from "../glob.js";
 import { safeOutputPath } from "../path-safety.js";

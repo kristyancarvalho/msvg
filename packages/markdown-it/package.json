@@ -1,5 +1,5 @@
 {
-  "name": "@msvg/markdown-it",
+  "name": "@markdown-utils/msvg-markdown-it",
   "version": "0.1.0",
   "description": "MSVG markdown-it plugin",
   "license": "MIT",
@@ -23,7 +23,8 @@
     "markdown-it"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "type": "module",
   "main": "./dist/index.js",
@@ -45,8 +46,8 @@
     "test:integration": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@msvg/core": "^0.1.0",
-    "@msvg/svg": "^0.1.0"
+    "@markdown-utils/msvg-core": "^0.1.0",
+    "@markdown-utils/msvg-svg": "^0.1.0"
   },
   "peerDependencies": {
     "markdown-it": ">=14"

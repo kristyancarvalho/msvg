@@ -1,4 +1,4 @@
-import type { LayersDiagram, MSVGDiagnostic } from "@msvg/core";
+import type { LayersDiagram, MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import type { ResolvedTheme } from "../theme.js";
 import {
   wrapText,

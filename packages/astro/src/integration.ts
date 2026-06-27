@@ -1,5 +1,5 @@
 import type { AstroIntegration } from "astro";
-import { remarkMSVG, type RemarkMSVGOptions } from "@msvg/remark";
+import { remarkMSVG, type RemarkMSVGOptions } from "@markdown-utils/msvg-remark";
 
 export interface AstroMSVGOptions extends RemarkMSVGOptions {
   publicDir?: string | undefined;
@@ -9,7 +9,7 @@ export default function msvgSvg(options: AstroMSVGOptions = {}): AstroIntegratio
   const outputDir = options.outputDir ?? options.publicDir ?? "public/msvg";
   const publicPath = options.publicPath ?? "/msvg";
   return {
-    name: "@msvg/astro",
+    name: "@markdown-utils/msvg-astro",
     hooks: {
       "astro:config:setup": ({ updateConfig }) => {
         updateConfig({

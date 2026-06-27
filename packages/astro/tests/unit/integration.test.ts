@@ -4,7 +4,7 @@ import msvgSvg from "../../src/integration.js";
 describe("msvgSvg", () => {
   it("returns an Astro integration", () => {
     const integration = msvgSvg({ publicPath: "/images/generated" });
-    expect(integration.name).toBe("@msvg/astro");
+    expect(integration.name).toBe("@markdown-utils/msvg-astro");
     expect(integration.hooks["astro:config:setup"]).toBeTypeOf("function");
   });
 

@@ -1,4 +1,4 @@
-# @msvg/markdown-it
+# @markdown-utils/msvg-markdown-it
 
 A markdown-it plugin that renders ` ```msvg ` fenced code blocks as MSVG diagrams. It uses the same parsing, validation, and rendering as the remark plugin, but runs synchronously, which makes it a good fit for RSS generation and sanitized HTML pipelines.
 
@@ -7,7 +7,7 @@ MSVG turns small text descriptions into static, accessible SVG diagrams for tech
 ## Installation
 
 ```bash
-npm install @msvg/markdown-it markdown-it
+npm install @markdown-utils/msvg-markdown-it markdown-it
 ```
 
 `markdown-it` is a peer dependency.
@@ -16,7 +16,7 @@ npm install @msvg/markdown-it markdown-it
 
 ```ts
 import MarkdownIt from "markdown-it";
-import { msvgMarkdownIt } from "@msvg/markdown-it";
+import { msvgMarkdownIt } from "@markdown-utils/msvg-markdown-it";
 
 const md = new MarkdownIt();
 
