@@ -1,5 +1,5 @@
 {
-  "name": "@msvg/svg",
+  "name": "@markdown-utils/msvg-svg",
   "version": "0.1.0",
   "description": "MSVG SVG layout engine and renderer",
   "license": "MIT",
@@ -25,7 +25,8 @@
     "accessibility"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "type": "module",
   "main": "./dist/index.js",
@@ -46,6 +47,6 @@
     "test:snapshots": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@msvg/core": "^0.1.0"
+    "@markdown-utils/msvg-core": "^0.1.0"
   }
 }

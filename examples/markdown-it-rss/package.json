@@ -7,7 +7,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
-    "@msvg/markdown-it": "*",
+    "@markdown-utils/msvg-markdown-it": "*",
     "markdown-it": "^14.1.0"
   }
 }

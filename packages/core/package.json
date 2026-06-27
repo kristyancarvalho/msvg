@@ -1,5 +1,5 @@
 {
-  "name": "@msvg/core",
+  "name": "@markdown-utils/msvg-core",
   "version": "0.1.0",
   "description": "MSVG core parser, normalizer, and validator",
   "license": "MIT",
@@ -24,7 +24,8 @@
     "ast"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "type": "module",
   "main": "./dist/index.js",

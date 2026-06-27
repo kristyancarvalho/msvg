@@ -30,27 +30,27 @@ components:
     kind: content
 
   cli:
-    label: "@msvg/cli"
+    label: "@markdown-utils/msvg-cli"
     kind: build
 
   core:
-    label: "@msvg/core"
+    label: "@markdown-utils/msvg-core"
     kind: service
 
   svg:
-    label: "@msvg/svg"
+    label: "@markdown-utils/msvg-svg"
     kind: output
 
   astro:
-    label: "@msvg/astro"
+    label: "@markdown-utils/msvg-astro"
     kind: external
 
   remark:
-    label: "@msvg/remark"
+    label: "@markdown-utils/msvg-remark"
     kind: external
 
   markdownIt:
-    label: "@msvg/markdown-it"
+    label: "@markdown-utils/msvg-markdown-it"
     kind: external
 
 connections:

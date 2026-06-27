@@ -4,12 +4,12 @@
   "commit": false,
   "fixed": [
     [
-      "@msvg/core",
-      "@msvg/svg",
-      "@msvg/remark",
-      "@msvg/markdown-it",
-      "@msvg/astro",
-      "@msvg/cli"
+      "@markdown-utils/msvg-core",
+      "@markdown-utils/msvg-svg",
+      "@markdown-utils/msvg-remark",
+      "@markdown-utils/msvg-markdown-it",
+      "@markdown-utils/msvg-astro",
+      "@markdown-utils/msvg-cli"
     ]
   ],
   "linked": [],

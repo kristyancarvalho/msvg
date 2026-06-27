@@ -1,8 +1,8 @@
 import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
 import { join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseAndValidate, hasErrors } from "@msvg/core";
-import { renderSvg } from "@msvg/svg";
+import { parseAndValidate, hasErrors } from "@markdown-utils/msvg-core";
+import { renderSvg } from "@markdown-utils/msvg-svg";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const srcDir = join(root, ".github", "assets", "examples", "src");

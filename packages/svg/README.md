@@ -1,20 +1,20 @@
-# @msvg/svg
+# @markdown-utils/msvg-svg
 
-The renderer for MSVG. This package takes a normalized diagram model from [`@msvg/core`](../core/README.md), computes a deterministic layout, and produces a static, accessible SVG string. It uses no browser, no runtime JavaScript, and no external fonts or images.
+The renderer for MSVG. This package takes a normalized diagram model from [`@markdown-utils/msvg-core`](../core/README.md), computes a deterministic layout, and produces a static, accessible SVG string. It uses no browser, no runtime JavaScript, and no external fonts or images.
 
 MSVG turns small text descriptions into static, accessible SVG diagrams for technical writing. See the [project README](../../README.md) for the full picture.
 
 ## Installation
 
 ```bash
-npm install @msvg/svg @msvg/core
+npm install @markdown-utils/msvg-svg @markdown-utils/msvg-core
 ```
 
 ## Usage
 
 ```ts
-import { parseAndValidate } from "@msvg/core";
-import { renderSvg } from "@msvg/svg";
+import { parseAndValidate } from "@markdown-utils/msvg-core";
+import { renderSvg } from "@markdown-utils/msvg-svg";
 
 const parsed = parseAndValidate(`
 type: layers

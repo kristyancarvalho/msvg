@@ -11,12 +11,12 @@ nodes:
     kind: input
 
   core:
-    label: "@msvg/core"
+    label: "@markdown-utils/msvg-core"
     description: "Parse and validate"
     kind: process
 
   svg:
-    label: "@msvg/svg"
+    label: "@markdown-utils/msvg-svg"
     description: "Layout and render"
     kind: process
 

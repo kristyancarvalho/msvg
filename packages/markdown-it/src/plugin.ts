@@ -3,9 +3,9 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import type MarkdownIt from "markdown-it";
 import type Token from "markdown-it/lib/token.mjs";
-import type { MSVGDiagnostic } from "@msvg/core";
-import { parseAndValidate } from "@msvg/core";
-import { renderSvg } from "@msvg/svg";
+import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
+import { parseAndValidate } from "@markdown-utils/msvg-core";
+import { renderSvg } from "@markdown-utils/msvg-svg";
 
 export interface MarkdownItMSVGOptions {
   output?: "asset" | "inline" | undefined;

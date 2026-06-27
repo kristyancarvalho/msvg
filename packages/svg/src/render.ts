@@ -1,4 +1,4 @@
-import type { DiagramDocument, MSVGDiagnostic } from "@msvg/core";
+import type { DiagramDocument, MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import type { ResolvedTheme, ThemeInput } from "./theme.js";
 import { resolveTheme } from "./theme.js";
 import { layoutAndRender } from "./layout/index.js";

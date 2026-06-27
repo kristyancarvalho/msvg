@@ -1,4 +1,4 @@
-import type { TimelineDiagram, MSVGDiagnostic } from "@msvg/core";
+import type { TimelineDiagram, MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import type { ResolvedTheme } from "../theme.js";
 import {
   wrapText,

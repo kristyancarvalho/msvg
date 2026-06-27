@@ -8,7 +8,7 @@ import type {
   SequenceDiagram,
   TimelineDiagram,
   ArchitectureDiagram,
-} from "@msvg/core";
+} from "@markdown-utils/msvg-core";
 
 const flow: FlowDiagram = {
   type: "flow",

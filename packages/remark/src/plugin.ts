@@ -1,8 +1,8 @@
 import type { Root } from "mdast";
 import type { Plugin } from "unified";
-import type { MSVGDiagnostic } from "@msvg/core";
-import { parseAndValidate } from "@msvg/core";
-import { renderSvg } from "@msvg/svg";
+import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
+import { parseAndValidate } from "@markdown-utils/msvg-core";
+import { renderSvg } from "@markdown-utils/msvg-svg";
 import { emitAsset, escapeHtml, imageHtml, type AssetOptions, type OutputMode } from "./assets.js";
 
 export interface RemarkMSVGOptions extends AssetOptions {

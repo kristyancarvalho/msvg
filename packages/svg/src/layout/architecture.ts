@@ -1,4 +1,8 @@
-import type { ArchitectureDiagram, ArchitectureComponent, MSVGDiagnostic } from "@msvg/core";
+import type {
+  ArchitectureDiagram,
+  ArchitectureComponent,
+  MSVGDiagnostic,
+} from "@markdown-utils/msvg-core";
 import type { ResolvedTheme } from "../theme.js";
 import {
   wrapText,
@@ -19,7 +23,7 @@ import {
   componentKindFill,
 } from "../primitives.js";
 import { escapeAttr, escapeXml, safeSvgId } from "../escaping.js";
-import { warnDiag } from "@msvg/core";
+import { warnDiag } from "@markdown-utils/msvg-core";
 
 const PAD = 40;
 const BOX_PAD_X = 16;

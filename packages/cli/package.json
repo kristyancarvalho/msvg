@@ -1,5 +1,5 @@
 {
-  "name": "@msvg/cli",
+  "name": "@markdown-utils/msvg-cli",
   "version": "0.1.0",
   "description": "MSVG command-line interface",
   "license": "MIT",
@@ -23,13 +23,14 @@
     "cli"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "msvg": "./dist/main.js"
+    "msvg": "dist/main.js"
   },
   "exports": {
     ".": {
@@ -37,7 +38,11 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup",
     "check": "tsc --noEmit",
@@ -47,8 +52,8 @@
     "test:snapshots": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@msvg/core": "^0.1.0",
-    "@msvg/svg": "^0.1.0",
+    "@markdown-utils/msvg-core": "^0.1.0",
+    "@markdown-utils/msvg-svg": "^0.1.0",
     "commander": "^12.1.0",
     "glob": "^11.0.0"
   }

@@ -1,4 +1,4 @@
-import type { MindmapDiagram, MSVGDiagnostic } from "@msvg/core";
+import type { MindmapDiagram, MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import type { ResolvedTheme } from "../theme.js";
 import {
   wrapText,
@@ -15,7 +15,7 @@ import {
   svgRoot,
 } from "../primitives.js";
 import { escapeAttr } from "../escaping.js";
-import { warnDiag } from "@msvg/core";
+import { warnDiag } from "@markdown-utils/msvg-core";
 
 const PAD = 40;
 const BOX_PAD_X = 14;

@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
-import type { MSVGDiagnostic } from "@msvg/core";
-import { hasErrors, parseAndValidate } from "@msvg/core";
-import type { DiagramDocument } from "@msvg/core";
+import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
+import { hasErrors, parseAndValidate } from "@markdown-utils/msvg-core";
+import type { DiagramDocument } from "@markdown-utils/msvg-core";
 
 export interface InspectOptions {
   json?: boolean | undefined;
