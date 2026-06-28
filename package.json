@@ -19,7 +19,8 @@
     "test:report": "npm run test:report --workspaces --if-present",
     "quality:report": "npm run test:report && node scripts/quality-report.mjs",
     "examples:check": "npm run start -w example-basic-node >/dev/null && npm run start -w example-markdown-it-rss >/dev/null && npm run build -w example-astro-blog",
-    "verify": "npm run check && npm test && npm run test:coverage && npm run test:snapshots && npm run test:integration && npm run test:e2e && npm run build && npm run examples:check"
+    "comment-audit": "node scripts/comment-audit.mjs",
+    "verify": "npm run comment-audit && npm run check && npm test && npm run test:coverage && npm run test:snapshots && npm run test:integration && npm run test:e2e && npm run build && npm run examples:check"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",
