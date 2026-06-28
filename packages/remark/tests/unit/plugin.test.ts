@@ -70,6 +70,27 @@ describe("remarkMSVG", () => {
     expect(node.value).toContain("<title");
   });
 
+  it("threads theme output mode into inline rendering", async () => {
+    const tree: Root = {
+      type: "root",
+      children: [{ type: "code", lang: "msvg", value: diagram }],
+    };
+    await run(tree, { output: "inline", themeOutputMode: "css-variables" });
+    const node = tree.children[0] as { value: string };
+    expect(node.value).toContain("<style");
+    expect(node.value).toContain("var(--msvg-");
+  });
+
+  it("threads a dark theme into inline rendering", async () => {
+    const tree: Root = {
+      type: "root",
+      children: [{ type: "code", lang: "msvg", value: diagram }],
+    };
+    await run(tree, { output: "inline", theme: "dark" });
+    const node = tree.children[0] as { value: string };
+    expect(node.value).not.toContain("#faf9f7");
+  });
+
   it("ignores non-msvg code blocks", async () => {
     const tree: Root = {
       type: "root",

@@ -11,12 +11,12 @@ import { layoutAndRender } from "./layout/index.js";
 import { safeSvgId } from "./escaping.js";
 
 export interface RenderSvgOptions {
-  theme?: ThemeInput;
-  diagramId?: string;
-  themeMode?: ThemeResolveMode;
-  themeOutputMode?: ThemeOutputMode;
-  background?: ThemeBackground;
-  idSalt?: string;
+  theme?: ThemeInput | undefined;
+  diagramId?: string | undefined;
+  themeMode?: ThemeResolveMode | undefined;
+  themeOutputMode?: ThemeOutputMode | undefined;
+  background?: ThemeBackground | undefined;
+  idSalt?: string | undefined;
 }
 
 export interface RenderSvgResult {
@@ -26,12 +26,12 @@ export interface RenderSvgResult {
 }
 
 export interface LayoutOptions {
-  theme?: ThemeInput;
-  diagramId?: string;
-  themeMode?: ThemeResolveMode;
-  themeOutputMode?: ThemeOutputMode;
-  background?: ThemeBackground;
-  idSalt?: string;
+  theme?: ThemeInput | undefined;
+  diagramId?: string | undefined;
+  themeMode?: ThemeResolveMode | undefined;
+  themeOutputMode?: ThemeOutputMode | undefined;
+  background?: ThemeBackground | undefined;
+  idSalt?: string | undefined;
 }
 
 export interface LayoutResult {

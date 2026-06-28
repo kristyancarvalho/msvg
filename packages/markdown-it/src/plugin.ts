@@ -5,7 +5,7 @@ import type MarkdownIt from "markdown-it";
 import type Token from "markdown-it/lib/token.mjs";
 import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import { parseAndValidate } from "@markdown-utils/msvg-core";
-import { renderSvg } from "@markdown-utils/msvg-svg";
+import { renderSvg, type ThemeInput, type ThemeResolveMode, type ThemeOutputMode, type ThemeBackground } from "@markdown-utils/msvg-svg";
 
 export interface MarkdownItMSVGOptions {
   output?: "asset" | "inline" | undefined;
@@ -15,6 +15,10 @@ export interface MarkdownItMSVGOptions {
   diagnostics?: MSVGDiagnostic[] | undefined;
   emitFile?: ((filePath: string, contents: string) => void) | undefined;
   urlOnly?: boolean | undefined;
+  theme?: ThemeInput | undefined;
+  themeMode?: ThemeResolveMode | undefined;
+  themeOutputMode?: ThemeOutputMode | undefined;
+  background?: ThemeBackground | undefined;
 }
 
 function escapeHtml(value: string): string {
@@ -91,7 +95,12 @@ export function msvgMarkdownIt(md: MarkdownIt, options: MarkdownItMSVGOptions = 
       const message = parsed.diagnostics.map((diag) => `${diag.severity}: ${diag.message}`).join("\n");
       return `<pre class="msvg-error">${escapeHtml(message)}</pre>`;
     }
-    const rendered = renderSvg(parsed.diagram);
+    const rendered = renderSvg(parsed.diagram, {
+      theme: options.theme,
+      themeMode: options.themeMode,
+      themeOutputMode: options.themeOutputMode,
+      background: options.background,
+    });
     diagnostics.push(...rendered.diagnostics);
     if (options.output === "inline") {
       return rendered.svg;
