@@ -4,10 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "tsx src/index.ts"
   },
   "dependencies": {
     "@markdown-utils/msvg-markdown-it": "*",
     "markdown-it": "^14.1.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.16.0"
   }
 }
