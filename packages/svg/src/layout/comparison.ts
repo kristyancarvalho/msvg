@@ -70,9 +70,13 @@ export function renderComparison(
 
   const maxColH = colMetrics.reduce((max, c) => Math.max(max, c.totalH), 0);
 
-  const verdictH = diagram.verdict
-    ? COL_PAD_Y + textBlockHeight(1, DESC_FONT_SIZE) + COL_PAD_Y
+  const verdictLines = diagram.verdict
+    ? wrapText(diagram.verdict, totalW - PAD * 4, DESC_FONT_SIZE)
+    : [];
+  const verdictBoxH = diagram.verdict
+    ? textBlockHeight(verdictLines.length, DESC_FONT_SIZE) + COL_PAD_Y
     : 0;
+  const verdictH = diagram.verdict ? COL_PAD_Y + verdictBoxH : 0;
   const captionH = diagram.caption ? FONT_SIZE * LINE_HEIGHT + 12 : 0;
   const svgH = PAD + maxColH + verdictH + PAD + captionH;
 
@@ -111,11 +115,9 @@ export function renderComparison(
   let verdictEl = "";
   if (diagram.verdict) {
     const vy = PAD + maxColH + COL_PAD_Y;
-    const vLines = wrapText(diagram.verdict, totalW - PAD * 4, DESC_FONT_SIZE);
-    const vH = textBlockHeight(vLines.length, DESC_FONT_SIZE) + COL_PAD_Y;
     verdictEl =
-      roundedBox(PAD, vy, totalW - PAD * 2, vH, BOX_RADIUS, theme.surfaceMuted, theme.border, 1) +
-      multilineText(vLines, totalW / 2, vy + COL_PAD_Y / 2, DESC_FONT_SIZE, theme.textMuted, theme.fontFamily, "normal");
+      roundedBox(PAD, vy, totalW - PAD * 2, verdictBoxH, BOX_RADIUS, theme.surfaceMuted, theme.border, 1) +
+      multilineText(verdictLines, totalW / 2, vy + COL_PAD_Y / 2, DESC_FONT_SIZE, theme.textMuted, theme.fontFamily, "normal");
   }
 
   let capEl = "";

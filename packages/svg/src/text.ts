@@ -12,6 +12,21 @@ export interface WrappedLine {
   width: number;
 }
 
+export function breakLongWord(
+  word: string,
+  maxWidth: number,
+  fontSize: number = FONT_SIZE
+): string[] {
+  const charWidth = fontSize * CHAR_WIDTH_APPROX;
+  const maxChars = Math.max(1, Math.floor(maxWidth / charWidth));
+  if (word.length <= maxChars) return [word];
+  const chunks: string[] = [];
+  for (let i = 0; i < word.length; i += maxChars) {
+    chunks.push(word.slice(i, i + maxChars));
+  }
+  return chunks;
+}
+
 export function wrapText(
   text: string,
   maxWidth: number,
@@ -30,10 +45,15 @@ export function wrapText(
     } else {
       if (current.length > 0) {
         lines.push({ text: current, width: estimateTextWidth(current, fontSize) });
+        current = "";
       }
       if (estimateTextWidth(word, fontSize) > maxWidth) {
-        lines.push({ text: word, width: estimateTextWidth(word, fontSize) });
-        current = "";
+        const chunks = breakLongWord(word, maxWidth, fontSize);
+        for (let c = 0; c < chunks.length - 1; c++) {
+          const chunk = chunks[c]!;
+          lines.push({ text: chunk, width: estimateTextWidth(chunk, fontSize) });
+        }
+        current = chunks[chunks.length - 1] ?? "";
       } else {
         current = word;
       }
