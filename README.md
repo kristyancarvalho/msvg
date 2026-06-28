@@ -62,12 +62,12 @@ A typical flow: you author a fenced `msvg` block, an integration (`@markdown-uti
 
 ## See MSVG in action
 
-These diagrams were produced by MSVG from short YAML sources, each using a different built-in theme. The sources live in [`.github/assets/examples/src`](.github/assets/examples/src) and the rendered images in [`.github/assets/examples`](.github/assets/examples).
+These diagrams were produced by MSVG from short YAML sources, all using the `dark` built-in theme. The sources live in [`.github/assets/examples/src`](.github/assets/examples/src) and the rendered images in [`.github/assets/examples`](.github/assets/examples).
 
 <table>
   <tr>
     <td width="50%" valign="top">
-      <p><strong>Sequence</strong> &mdash; <code>mono</code> theme</p>
+      <p><strong>Sequence</strong> &mdash; <code>dark</code> theme</p>
       <img alt="A sequence diagram showing an author, a Markdown file, the static build, and the browser exchanging messages" src=".github/assets/examples/rendering.svg" width="100%">
     </td>
     <td width="50%" valign="top">
@@ -77,7 +77,7 @@ These diagrams were produced by MSVG from short YAML sources, each using a diffe
   </tr>
 </table>
 
-The hero diagram above the introduction is a `flow` diagram in the `paper` theme, and the ecosystem diagram is an `architecture` diagram in the `neutral` theme. Together they cover four diagram types and all four built-in themes. See [Themes](#themes) for the full list and [Regenerating the README diagrams](#regenerating-the-readme-diagrams) to rebuild these images.
+The hero diagram above the introduction is a `flow` diagram and the ecosystem diagram is an `architecture` diagram, both in the `dark` theme. Together with the gallery they cover four diagram types, all rendered with the `dark` theme. See [Themes](#themes) for the full list of built-in themes and [Regenerating the README diagrams](#regenerating-the-readme-diagrams) to rebuild these images.
 
 ## Installation
 

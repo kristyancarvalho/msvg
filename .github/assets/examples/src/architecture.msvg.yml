@@ -1,7 +1,7 @@
 type: architecture
 title: "The MSVG package ecosystem"
 description: "How the MSVG packages connect, from authoring through rendering to integrations."
-theme: neutral
+theme: dark
 direction: LR
 
 groups:
