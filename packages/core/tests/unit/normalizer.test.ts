@@ -57,6 +57,28 @@ describe("normalizeDiagram — flow", () => {
     const d = result.diagram as FlowDiagram | null;
     expect(d?.nodes[0]).toMatchObject({ id: "a", label: "Label A" });
   });
+
+  it("warns for an invalid node kind", () => {
+    const raw = {
+      type: "flow",
+      title: "T",
+      nodes: { a: { label: "A", kind: "sparkle" } },
+      edges: [],
+    };
+    const result = normalizeDiagram(raw);
+    expect(result.diagnostics.some((d) => d.code === DiagCodes.INVALID_NODE_KIND)).toBe(true);
+  });
+
+  it("warns for an unknown nested field on a node", () => {
+    const raw = {
+      type: "flow",
+      title: "T",
+      nodes: { a: { label: "A", colour: "red" } },
+      edges: [],
+    };
+    const result = normalizeDiagram(raw);
+    expect(result.diagnostics.some((d) => d.code === DiagCodes.UNKNOWN_FIELD)).toBe(true);
+  });
 });
 
 describe("normalizeDiagram — mindmap", () => {
@@ -216,6 +238,17 @@ describe("normalizeDiagram — timeline", () => {
     expect(result.diagnostics.some((d) => d.code === DiagCodes.INVALID_EVENT_STATUS)).toBe(true);
   });
 
+  it("accepts the blocked event status", () => {
+    const raw = {
+      ...timelineRaw,
+      events: [{ at: "Q1", title: "X", status: "blocked" }],
+    };
+    const result = normalizeDiagram(raw);
+    expect(result.diagnostics.some((d) => d.code === DiagCodes.INVALID_EVENT_STATUS)).toBe(false);
+    const d = result.diagram as TimelineDiagram | null;
+    expect(d?.events[0]?.status).toBe("blocked");
+  });
+
   it("returns error for missing events", () => {
     const result = normalizeDiagram({ type: "timeline", title: "X" });
     expect(result.diagnostics.some((d) => d.code === DiagCodes.MISSING_EVENTS)).toBe(true);
@@ -257,6 +290,24 @@ describe("normalizeDiagram — architecture", () => {
     expect(result.diagnostics.some((d) => d.code === DiagCodes.INVALID_COMPONENT_KIND)).toBe(true);
   });
 
+  it("accepts the extended component kinds", () => {
+    const raw = {
+      type: "architecture",
+      title: "System",
+      components: {
+        db: { label: "DB", kind: "database" },
+        mq: { label: "Queue", kind: "queue" },
+        u: { label: "User", kind: "user" },
+        x: { label: "Plain", kind: "default" },
+      },
+      connections: [],
+    };
+    const result = normalizeDiagram(raw);
+    expect(result.diagnostics.some((d) => d.code === DiagCodes.INVALID_COMPONENT_KIND)).toBe(false);
+    const d = result.diagram as ArchitectureDiagram | null;
+    expect(d?.components.map((c) => c.kind)).toEqual(["database", "queue", "user", "default"]);
+  });
+
   it("returns error for missing components", () => {
     const result = normalizeDiagram({ type: "architecture", title: "X" });
     expect(result.diagnostics.some((d) => d.code === DiagCodes.MISSING_COMPONENTS)).toBe(true);
@@ -270,10 +321,20 @@ describe("normalizeDiagram — base behavior", () => {
     expect(result.diagnostics.some((d) => d.code === DiagCodes.UNKNOWN_TYPE)).toBe(true);
   });
 
+  it("emits a single unknown-type diagnostic", () => {
+    const result = normalizeDiagram({ type: "galaxy", title: "X" });
+    expect(result.diagnostics.filter((d) => d.code === DiagCodes.UNKNOWN_TYPE)).toHaveLength(1);
+  });
+
   it("returns error for missing type", () => {
     const result = normalizeDiagram({ title: "X" });
     expect(result.diagram).toBeNull();
     expect(result.diagnostics.some((d) => d.code === DiagCodes.MISSING_TYPE)).toBe(true);
+  });
+
+  it("emits a single missing-type diagnostic", () => {
+    const result = normalizeDiagram({ title: "X" });
+    expect(result.diagnostics.filter((d) => d.code === DiagCodes.MISSING_TYPE)).toHaveLength(1);
   });
 
   it("returns error for non-object input", () => {

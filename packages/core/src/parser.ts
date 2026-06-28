@@ -8,14 +8,29 @@ export function parseMSVG(source: string, options: ParseOptions = {}): ParseResu
 
   let raw: unknown;
   try {
-    raw = load(source, { json: true });
+    raw = load(source);
   } catch (err) {
-    const message =
-      err instanceof YAMLException
-        ? err.message
-        : "Invalid YAML: unknown parse error.";
+    if (err instanceof YAMLException) {
+      const line = err.mark ? err.mark.line + 1 : undefined;
+      const column = err.mark ? err.mark.column + 1 : undefined;
+      if (err.reason === "duplicated mapping key") {
+        diagnostics.push(
+          errorDiag(DiagCodes.DUPLICATE_KEY, "Duplicate mapping key in diagram source.", {
+            filePath,
+            line,
+            column,
+            hint: "Each YAML key must be unique within its mapping. Remove or rename the repeated key.",
+          })
+        );
+      } else {
+        diagnostics.push(
+          errorDiag(DiagCodes.PARSE_INVALID_YAML, err.message, { filePath, line, column })
+        );
+      }
+      return { raw: null, diagnostics };
+    }
     diagnostics.push(
-      errorDiag(DiagCodes.PARSE_INVALID_YAML, message, { filePath })
+      errorDiag(DiagCodes.PARSE_INVALID_YAML, "Invalid YAML: unknown parse error.", { filePath })
     );
     return { raw: null, diagnostics };
   }

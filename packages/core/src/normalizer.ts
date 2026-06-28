@@ -51,6 +51,43 @@ function asArray(val: unknown): unknown[] | undefined {
   return Array.isArray(val) ? val : undefined;
 }
 
+const VALID_NODE_KINDS = ["default", "input", "process", "decision", "output", "warning", "success"];
+const VALID_COMPONENT_KINDS = [
+  "default",
+  "client",
+  "service",
+  "storage",
+  "database",
+  "queue",
+  "external",
+  "build",
+  "content",
+  "output",
+  "user",
+];
+const VALID_EVENT_STATUSES = ["past", "current", "future", "risk", "done", "blocked"];
+
+function unknownNestedFields(
+  obj: Record<string, unknown>,
+  knownFields: string[],
+  context: string,
+  filePath?: string
+): MSVGDiagnostic[] {
+  const diagnostics: MSVGDiagnostic[] = [];
+  for (const key of Object.keys(obj)) {
+    if (!knownFields.includes(key)) {
+      diagnostics.push(
+        warnDiag(
+          DiagCodes.UNKNOWN_FIELD,
+          `Unknown field "${key}" in ${context}. It will be ignored.`,
+          { filePath, hint: `Known fields: ${knownFields.join(", ")}.` }
+        )
+      );
+    }
+  }
+  return diagnostics;
+}
+
 function extractBase(
   raw: Record<string, unknown>,
   filePath?: string
@@ -149,11 +186,22 @@ function normalizeFlowDiagram(
     for (const [id, value] of Object.entries(nodesRecord)) {
       const nodeObj = asRecord(value);
       if (nodeObj) {
+        allDiag.push(...unknownNestedFields(nodeObj, ["label", "description", "kind"], `flow node "${id}"`, filePath));
+        const kind = asString(nodeObj["kind"]);
+        if (kind !== undefined && !VALID_NODE_KINDS.includes(kind)) {
+          allDiag.push(
+            warnDiag(
+              DiagCodes.INVALID_NODE_KIND,
+              `Unknown node kind "${kind}" for node "${id}". Valid values: ${VALID_NODE_KINDS.join(", ")}.`,
+              { filePath }
+            )
+          );
+        }
         nodes.push({
           id,
           label: asString(nodeObj["label"]) ?? id,
           description: asString(nodeObj["description"]),
-          kind: asString(nodeObj["kind"]) as FlowNode["kind"],
+          kind: kind as FlowNode["kind"],
         });
       } else if (typeof value === "string") {
         nodes.push({ id, label: value });
@@ -179,6 +227,7 @@ function normalizeFlowDiagram(
     for (const [id, value] of Object.entries(groupsRecord)) {
       const groupObj = asRecord(value);
       if (groupObj) {
+        allDiag.push(...unknownNestedFields(groupObj, ["label", "nodes"], `flow group "${id}"`, filePath));
         const components = asArray(groupObj["nodes"]) ?? [];
         groups.push({
           id,
@@ -306,6 +355,7 @@ function normalizeLayersDiagram(
   for (const item of rawLayers ?? []) {
     const layerObj = asRecord(item);
     if (layerObj) {
+      allDiag.push(...unknownNestedFields(layerObj, ["label", "note", "emphasis"], "layer", filePath));
       const label = asString(layerObj["label"]);
       if (label) {
         layers.push({
@@ -359,6 +409,8 @@ function normalizeComparisonDiagram(
   for (const [id, value] of Object.entries(columnsRecord)) {
     const colObj = asRecord(value);
     if (!colObj) continue;
+
+    allDiag.push(...unknownNestedFields(colObj, ["label", "tone", "items"], `comparison column "${id}"`, filePath));
 
     const tone = asString(colObj["tone"]);
     if (tone !== undefined && !validTones.includes(tone)) {
@@ -434,6 +486,7 @@ function normalizeSequenceDiagram(
   for (const rawMsg of rawMessages ?? []) {
     const msgObj = asRecord(rawMsg);
     if (msgObj && typeof msgObj["from"] === "string" && typeof msgObj["to"] === "string") {
+      allDiag.push(...unknownNestedFields(msgObj, ["from", "to", "label", "note"], "sequence message", filePath));
       messages.push({
         from: msgObj["from"] as string,
         to: msgObj["to"] as string,
@@ -501,12 +554,13 @@ function normalizeTimelineDiagram(
     return { diagram: null, diagnostics: allDiag };
   }
 
-  const validStatuses = ["past", "current", "future", "risk", "done"];
   const events: TimelineEvent[] = [];
 
   for (const rawEvent of rawEvents) {
     const eventObj = asRecord(rawEvent);
     if (!eventObj) continue;
+
+    allDiag.push(...unknownNestedFields(eventObj, ["at", "title", "description", "status"], "timeline event", filePath));
 
     const at = asString(eventObj["at"]);
     const title = asString(eventObj["title"]);
@@ -514,11 +568,11 @@ function normalizeTimelineDiagram(
 
     if (!at || !title) continue;
 
-    if (status !== undefined && !validStatuses.includes(status)) {
+    if (status !== undefined && !VALID_EVENT_STATUSES.includes(status)) {
       allDiag.push(
         warnDiag(
           DiagCodes.INVALID_EVENT_STATUS,
-          `Unknown event status "${status}". Valid values: ${validStatuses.join(", ")}.`,
+          `Unknown event status "${status}". Valid values: ${VALID_EVENT_STATUSES.join(", ")}.`,
           { filePath }
         )
       );
@@ -576,7 +630,6 @@ function normalizeArchitectureDiagram(
     );
   }
 
-  const validKinds = ["client", "service", "storage", "external", "build", "content", "output"];
   const components: ArchitectureComponent[] = [];
 
   if (componentsRecord) {
@@ -584,12 +637,14 @@ function normalizeArchitectureDiagram(
       const compObj = asRecord(value);
       if (!compObj) continue;
 
+      allDiag.push(...unknownNestedFields(compObj, ["label", "kind"], `architecture component "${id}"`, filePath));
+
       const kind = asString(compObj["kind"]);
-      if (kind !== undefined && !validKinds.includes(kind)) {
+      if (kind !== undefined && !VALID_COMPONENT_KINDS.includes(kind)) {
         allDiag.push(
           warnDiag(
             DiagCodes.INVALID_COMPONENT_KIND,
-            `Unknown component kind "${kind}" for component "${id}". Valid values: ${validKinds.join(", ")}.`,
+            `Unknown component kind "${kind}" for component "${id}". Valid values: ${VALID_COMPONENT_KINDS.join(", ")}.`,
             { filePath }
           )
         );
@@ -611,6 +666,7 @@ function normalizeArchitectureDiagram(
     for (const [id, value] of Object.entries(groupsRecord)) {
       const groupObj = asRecord(value);
       if (!groupObj) continue;
+      allDiag.push(...unknownNestedFields(groupObj, ["label", "components"], `architecture group "${id}"`, filePath));
       const rawComponentIds = asArray(groupObj["components"]) ?? [];
       groups.push({
         id,
@@ -692,19 +748,6 @@ export function normalizeDiagram(
     default: {
       const { base, diagnostics: baseDiag } = extractBase(raw, filePath);
       diagnostics.push(...baseDiag);
-      if (!type) {
-        diagnostics.push(
-          errorDiag(DiagCodes.MISSING_TYPE, "Diagram must have a 'type' field.", { filePath })
-        );
-      } else {
-        diagnostics.push(
-          errorDiag(
-            DiagCodes.UNKNOWN_TYPE,
-            `Unknown diagram type "${type}". Supported types: ${["flow","mindmap","layers","comparison","sequence","timeline","architecture"].join(", ")}.`,
-            { filePath }
-          )
-        );
-      }
       void base;
       return { diagram: null, diagnostics };
     }
