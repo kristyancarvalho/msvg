@@ -112,6 +112,23 @@ describe("validateDiagram — flow", () => {
     expect(vResult.diagnostics.some((d) => d.code === DiagCodes.UNKNOWN_FIELD)).toBe(false);
   });
 
+  it("accepts the alt field without an unknown-field warning", () => {
+    const raw = {
+      type: "flow",
+      title: "T",
+      alt: "Readable summary",
+      nodes: { a: { label: "A" } },
+      edges: [],
+    };
+    const normalizeResult = normalizeDiagram(raw);
+    const vResult = validateDiagram(
+      normalizeResult.diagram!,
+      { warnUnknownFields: true },
+      raw as Record<string, unknown>
+    );
+    expect(vResult.diagnostics.some((d) => d.code === DiagCodes.UNKNOWN_FIELD)).toBe(false);
+  });
+
   it("reports invalid node ID characters", () => {
     const diagram: FlowDiagram = {
       ...makeFlow(),

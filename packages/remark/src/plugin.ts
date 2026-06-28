@@ -61,6 +61,7 @@ export const remarkMSVG: Plugin<[RemarkMSVGOptions?], Root> = (options = {}) => 
         themeMode: options.themeMode,
         themeOutputMode: options.themeOutputMode,
         background: options.background,
+        idSalt: `${index}-${line ?? 0}`,
       });
       diagnostics.push(...rendered.diagnostics);
       if (options.output === "inline") {
@@ -81,7 +82,7 @@ export const remarkMSVG: Plugin<[RemarkMSVGOptions?], Root> = (options = {}) => 
       const asset = await emitAsset(parsed.diagram.title, rendered.svg, { ...options, sourcePath });
       parent.children![index] = {
         type: "html",
-        value: imageHtml(asset.publicUrl, parsed.diagram.title, parsed.diagram.caption, parsed.diagram.type),
+        value: imageHtml(asset.publicUrl, rendered.altText, parsed.diagram.caption, parsed.diagram.type),
       };
     });
     await Promise.all(tasks);

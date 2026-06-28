@@ -72,8 +72,8 @@ function emitAsset(title: string, svg: string, options: MarkdownItMSVGOptions): 
   return publicUrl;
 }
 
-function imageHtml(src: string, title: string, caption: string | undefined, type: string): string {
-  const img = `<img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" loading="lazy" decoding="async">`;
+function imageHtml(src: string, alt: string, caption: string | undefined, type: string): string {
+  const img = `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">`;
   if (caption !== undefined && caption.trim().length > 0) {
     return `<figure class="msvg msvg-${escapeHtml(type)}">${img}<figcaption>${escapeHtml(caption)}</figcaption></figure>`;
   }
@@ -100,6 +100,7 @@ export function msvgMarkdownIt(md: MarkdownIt, options: MarkdownItMSVGOptions = 
       themeMode: options.themeMode,
       themeOutputMode: options.themeOutputMode,
       background: options.background,
+      idSalt: String(idx),
     });
     diagnostics.push(...rendered.diagnostics);
     if (options.output === "inline") {
@@ -121,6 +122,6 @@ export function msvgMarkdownIt(md: MarkdownIt, options: MarkdownItMSVGOptions = 
     if (willWrite) {
       emitAsset(parsed.diagram.title, rendered.svg, options);
     }
-    return imageHtml(publicUrl, parsed.diagram.title, parsed.diagram.caption, parsed.diagram.type);
+    return imageHtml(publicUrl, rendered.altText, parsed.diagram.caption, parsed.diagram.type);
   };
 }

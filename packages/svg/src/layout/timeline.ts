@@ -14,7 +14,7 @@ import {
   svgRoot,
   statusIndicatorColor,
 } from "../primitives.js";
-import { escapeAttr } from "../escaping.js";
+import { escapeAttr, escapeXml } from "../escaping.js";
 
 const PAD = 32;
 const DOT_R = 8;
@@ -25,6 +25,20 @@ const BOX_PAD_Y = 10;
 const BOX_RADIUS = 8;
 const EVENT_V_GAP = 20;
 const AT_COL_W = 90;
+
+const STATUS_LABELS: Record<string, string> = {
+  past: "Past",
+  current: "Now",
+  future: "Planned",
+  risk: "At risk",
+  done: "Done",
+  blocked: "Blocked",
+};
+
+function statusLabel(status: string | undefined): string {
+  if (status === undefined) return "";
+  return STATUS_LABELS[status] ?? status;
+}
 
 export function renderTimeline(
   diagram: TimelineDiagram,
@@ -39,11 +53,17 @@ export function renderTimeline(
   const eventMetrics = diagram.events.map((ev) => {
     const titleLines = wrapText(ev.title, contentW - BOX_PAD_X * 2);
     const descLines = ev.description ? wrapText(ev.description, contentW - BOX_PAD_X * 2, DESC_FONT_SIZE) : [];
-    const h =
+    const boxH =
       BOX_PAD_Y * 2 +
       textBlockHeight(titleLines.length) +
       (descLines.length > 0 ? 4 + textBlockHeight(descLines.length, DESC_FONT_SIZE) : 0);
-    return { ev, titleLines, descLines, h };
+    const atLines = wrapText(ev.at, AT_COL_W - 8);
+    const label = statusLabel(ev.status);
+    const atColH =
+      textBlockHeight(atLines.length, DESC_FONT_SIZE) +
+      (label.length > 0 ? DESC_FONT_SIZE * LINE_HEIGHT + 4 : 0);
+    const h = Math.max(boxH, atColH);
+    return { ev, titleLines, descLines, atLines, label, h };
   });
 
   const captionH = diagram.caption ? FONT_SIZE * LINE_HEIGHT + 12 : 0;
@@ -55,7 +75,7 @@ export function renderTimeline(
   const axisEl = `<line x1="${AXIS_X}" y1="${axisTop}" x2="${AXIS_X}" y2="${axisBot}" stroke="${escapeAttr(theme.border)}" stroke-width="2"/>`;
 
   let y = PAD;
-  const eventEls = eventMetrics.map(({ ev, titleLines, descLines, h }) => {
+  const eventEls = eventMetrics.map(({ ev, titleLines, descLines, atLines, label, h }) => {
     const dotY = y + h / 2;
     const color = statusIndicatorColor(ev.status, theme);
 
@@ -67,15 +87,20 @@ export function renderTimeline(
         ? `<circle cx="${AXIS_X}" cy="${dotY}" r="${DOT_R - 4}" fill="${escapeAttr(color)}"/>`
         : "");
 
-    const atLines = wrapText(ev.at, AT_COL_W - 8);
+    const labelH = label.length > 0 ? DESC_FONT_SIZE * LINE_HEIGHT + 4 : 0;
+    const atBlockTop = dotY - (textBlockHeight(atLines.length, DESC_FONT_SIZE) + labelH) / 2;
     const atEl = multilineText(
       atLines,
       AXIS_X - DOT_R - 10,
-      dotY - (atLines.length * FONT_SIZE * 0.7) / 2,
+      atBlockTop,
       DESC_FONT_SIZE,
       theme.textMuted,
       theme.fontFamily
     );
+    const statusEl =
+      label.length > 0
+        ? `<text x="${AXIS_X - DOT_R - 10}" y="${atBlockTop + textBlockHeight(atLines.length, DESC_FONT_SIZE) + DESC_FONT_SIZE}" text-anchor="middle" font-size="${DESC_FONT_SIZE}" font-family="${escapeAttr(theme.fontFamily)}" font-weight="600" fill="${escapeAttr(color)}">${escapeXml(label)}</text>`
+        : "";
 
     const connector = `<line x1="${AXIS_X + DOT_R}" y1="${dotY}" x2="${CONTENT_X}" y2="${dotY}" stroke="${escapeAttr(theme.border)}" stroke-width="1"/>`;
 
@@ -95,7 +120,7 @@ export function renderTimeline(
     }
 
     y += h + EVENT_V_GAP;
-    return atEl + dot + connector + box + titleEl + descEl;
+    return atEl + statusEl + dot + connector + box + titleEl + descEl;
   }).join("");
 
   let capEl = "";

@@ -25,6 +25,7 @@ export interface DiagramBase {
   title: string;
   description?: string | undefined;
   caption?: string | undefined;
+  alt?: string | undefined;
   theme?: string | Record<string, string> | undefined;
   id?: string | undefined;
 }

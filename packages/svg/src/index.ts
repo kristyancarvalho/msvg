@@ -1,4 +1,4 @@
-export { renderSvg, layoutDiagram } from "./render.js";
+export { renderSvg, layoutDiagram, altTextFor } from "./render.js";
 export type { RenderSvgOptions, RenderSvgResult, LayoutOptions, LayoutResult } from "./render.js";
 
 export { resolveTheme, resolveThemeResult, isValidColor, BUILT_IN_THEME_NAMES } from "./theme.js";

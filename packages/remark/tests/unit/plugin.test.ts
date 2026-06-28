@@ -120,4 +120,44 @@ describe("remarkMSVG", () => {
     expect(diagnostics.length).toBeGreaterThan(0);
     expect(node.value).toContain("msvg-error");
   });
+
+  it("uses the diagram description as image alt text", async () => {
+    const described = "type: flow\ntitle: Pipeline\ndescription: A described pipeline\nnodes:\n  a: Start\n  b: End\nedges:\n  - a -> b";
+    const tree: Root = {
+      type: "root",
+      children: [{ type: "code", lang: "msvg", value: described }],
+    };
+    await run(tree, { publicPath: "/images", emitFile: () => {} });
+    const node = tree.children[0] as { value: string };
+    expect(node.value).toContain('alt="A described pipeline"');
+  });
+
+  it("uses an explicit alt field as image alt text", async () => {
+    const withAlt = "type: flow\ntitle: Pipeline\nalt: Custom alt text\ndescription: A described pipeline\nnodes:\n  a: Start\n  b: End\nedges:\n  - a -> b";
+    const tree: Root = {
+      type: "root",
+      children: [{ type: "code", lang: "msvg", value: withAlt }],
+    };
+    await run(tree, { publicPath: "/images", emitFile: () => {} });
+    const node = tree.children[0] as { value: string };
+    expect(node.value).toContain('alt="Custom alt text"');
+  });
+
+  it("gives same-title inline diagrams unique element ids", async () => {
+    const tree: Root = {
+      type: "root",
+      children: [
+        { type: "code", lang: "msvg", value: diagram },
+        { type: "code", lang: "msvg", value: diagram },
+      ],
+    };
+    await run(tree, { output: "inline" });
+    const first = (tree.children[0] as { value: string }).value;
+    const second = (tree.children[1] as { value: string }).value;
+    const firstId = first.match(/id="([^"]*-title)"/)?.[1];
+    const secondId = second.match(/id="([^"]*-title)"/)?.[1];
+    expect(firstId).toBeTruthy();
+    expect(secondId).toBeTruthy();
+    expect(firstId).not.toBe(secondId);
+  });
 });

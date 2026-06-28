@@ -23,6 +23,21 @@ export interface RenderSvgResult {
   svg: string;
   diagnostics: MSVGDiagnostic[];
   theme: ResolvedTheme;
+  altText: string;
+}
+
+export function altTextFor(diagram: DiagramDocument): string {
+  if (diagram.alt !== undefined && diagram.alt.trim().length > 0) {
+    return diagram.alt.trim();
+  }
+  if (diagram.description !== undefined && diagram.description.trim().length > 0) {
+    return diagram.description.trim();
+  }
+  const generated = describeDiagram(diagram);
+  if (generated.trim().length > 0) {
+    return generated.trim();
+  }
+  return diagram.title;
 }
 
 export interface LayoutOptions {
@@ -89,6 +104,7 @@ export function renderSvg(
     svg: rendered.svg,
     diagnostics: [...resolution.diagnostics, ...rendered.diagnostics],
     theme: resolution.theme,
+    altText: altTextFor(diagram),
   };
 }
 
