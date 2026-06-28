@@ -35,7 +35,7 @@ export function renderSequence(
 
   const pCount = diagram.participants.length;
   const colW = PARTICIPANT_W + PARTICIPANT_GAP;
-  const svgW = PAD * 2 + pCount * colW - PARTICIPANT_GAP + PARTICIPANT_W;
+  const baseSvgW = PAD * 2 + pCount * colW - PARTICIPANT_GAP + PARTICIPANT_W;
   const lifelineTop = PAD + PARTICIPANT_H;
   const messagesH = diagram.messages.length * MESSAGE_V_GAP + LIFELINE_EXTRA;
   const captionH = diagram.caption ? FONT_SIZE * LINE_HEIGHT + 12 : 0;
@@ -50,6 +50,8 @@ export function renderSequence(
   }));
 
   const centerMap = new Map(participantCenters.map((pc) => [pc.p.id, pc.cx]));
+
+  let contentMaxX = baseSvgW - PAD;
 
   const participantEls = participantCenters.map(({ p, x }) => {
     const lines = wrapText(p.label, PARTICIPANT_W - 16);
@@ -74,6 +76,7 @@ export function renderSequence(
 
     if (isSelf) {
       const loopX = fromCx + 30;
+      contentMaxX = Math.max(contentMaxX, loopX + 20);
       const d = `M ${fromCx} ${y - 10} C ${loopX + 20} ${y - 10}, ${loopX + 20} ${y + 10}, ${fromCx} ${y + 10}`;
       arrowEl = svgArrowPath(d, markerId, { stroke: escapeAttr(theme.borderStrong), "stroke-width": "1.5" });
     } else {
@@ -89,6 +92,7 @@ export function renderSequence(
       const midY = isSelf ? y : y - 8;
       const tw = estimateTextWidth(msg.label, MSG_FONT) + 8;
       const th = MSG_FONT + 4;
+      contentMaxX = Math.max(contentMaxX, midX + tw / 2);
       labelEl =
         `<rect x="${midX - tw / 2}" y="${midY - th}" width="${tw}" height="${th}" rx="3" fill="${escapeAttr(theme.background)}" opacity="0.9"/>` +
         `<text x="${midX}" y="${midY - 2}" text-anchor="middle" font-size="${MSG_FONT}" font-family="${escapeAttr(theme.fontFamily)}" fill="${escapeAttr(theme.textMuted)}">${escapeXml(msg.label)}</text>`;
@@ -97,6 +101,7 @@ export function renderSequence(
     let noteEl = "";
     if (msg.note) {
       const noteX = Math.max(fromCx, toCx) + 16;
+      contentMaxX = Math.max(contentMaxX, noteX + estimateTextWidth(msg.note, DESC_FONT_SIZE - 1));
       noteEl = `<text x="${noteX}" y="${y + 4}" font-size="${DESC_FONT_SIZE - 1}" font-family="${escapeAttr(theme.fontFamily)}" fill="${escapeAttr(theme.textMuted)}" font-style="italic">${escapeXml(msg.note)}</text>`;
     }
 
@@ -111,6 +116,8 @@ export function renderSequence(
     const textEl = multilineText(lines, cx, ty + 12, FONT_SIZE, theme.background, theme.fontFamily, "600");
     return rect + textEl;
   }).join("");
+
+  const svgW = Math.max(baseSvgW, contentMaxX + PAD);
 
   const defs = `<defs>${arrowMarker(markerId, theme.borderStrong)}</defs>`;
 
