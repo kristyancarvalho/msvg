@@ -36,6 +36,12 @@ jobs:
       - name: Run verification gate
         run: docker compose run --rm msvg npm run verify
 
+      - name: Check README example asset drift
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          docker compose run --rm msvg npm run assets:generate
+          git diff --exit-code .github/assets/examples
+
       - name: Generate quality report and badges
         run: docker compose run --rm msvg npm run quality:report
 
