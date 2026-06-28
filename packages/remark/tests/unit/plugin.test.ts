@@ -32,6 +32,33 @@ describe("remarkMSVG", () => {
     expect(emitted[0]).toContain("pipeline-");
   });
 
+  it("renders an asset image without writing in explicit urlOnly mode", async () => {
+    const diagnostics: Array<{ code: string }> = [];
+    const tree: Root = {
+      type: "root",
+      children: [{ type: "code", lang: "msvg", value: diagram }],
+    };
+    await run(tree, { output: "asset", publicPath: "/images", urlOnly: true, diagnostics });
+    const node = tree.children[0] as { value: string };
+    expect(node.value).toContain("<img");
+    expect(node.value).toContain("/images/post/pipeline-");
+    expect(diagnostics.some((d) => d.code === "MSVG_ASSET_NO_OUTPUT")).toBe(false);
+  });
+
+  it("never emits a broken image when asset mode has no output target", async () => {
+    const diagnostics: Array<{ code: string; severity: string }> = [];
+    const tree: Root = {
+      type: "root",
+      children: [{ type: "code", lang: "msvg", value: diagram }],
+    };
+    await run(tree, { output: "asset", publicPath: "/images", diagnostics });
+    const node = tree.children[0] as { value: string };
+    expect(node.value).not.toContain("<img");
+    expect(node.value).toContain("<svg");
+    const diag = diagnostics.find((d) => d.code === "MSVG_ASSET_NO_OUTPUT");
+    expect(diag?.severity).toBe("error");
+  });
+
   it("renders inline SVG when explicitly configured", async () => {
     const tree: Root = {
       type: "root",

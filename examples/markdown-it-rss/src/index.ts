@@ -27,6 +27,7 @@ const md = new MarkdownIt();
 msvgMarkdownIt(md, {
   output: "asset",
   publicPath: "/msvg",
+  urlOnly: true,
 });
 
 const html = md.render(markdown);

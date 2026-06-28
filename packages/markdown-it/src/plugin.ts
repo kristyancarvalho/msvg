@@ -14,6 +14,7 @@ export interface MarkdownItMSVGOptions {
   sourcePath?: string | undefined;
   diagnostics?: MSVGDiagnostic[] | undefined;
   emitFile?: ((filePath: string, contents: string) => void) | undefined;
+  urlOnly?: boolean | undefined;
 }
 
 function escapeHtml(value: string): string {
@@ -95,10 +96,20 @@ export function msvgMarkdownIt(md: MarkdownIt, options: MarkdownItMSVGOptions = 
     if (options.output === "inline") {
       return rendered.svg;
     }
+    const willWrite = options.emitFile !== undefined || options.outputDir !== undefined;
+    if (!willWrite && options.urlOnly !== true) {
+      diagnostics.push({
+        code: "MSVG_ASSET_NO_OUTPUT",
+        severity: "error",
+        message: "asset output requires outputDir, emitFile, or urlOnly; rendered inline to avoid a broken image reference",
+        filePath: options.sourcePath,
+      });
+      return rendered.svg;
+    }
     const source = slugify((options.sourcePath ?? "inline").replace(/\.[^.]+$/, ""));
     const name = `${slugify(parsed.diagram.title)}-${hashContent(rendered.svg)}.svg`;
     const publicUrl = `${normalizePublicPath(options.publicPath)}/${source}/${name}`;
-    if (options.emitFile !== undefined || options.outputDir !== undefined) {
+    if (willWrite) {
       emitAsset(parsed.diagram.title, rendered.svg, options);
     }
     return imageHtml(publicUrl, parsed.diagram.title, parsed.diagram.caption, parsed.diagram.type);

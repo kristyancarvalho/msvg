@@ -11,12 +11,35 @@ edges:
   - a -> b`;
 
 describe("msvgMarkdownIt", () => {
-  it("renders asset image HTML by default", () => {
+  it("renders asset image HTML when files are written", () => {
     const md = new MarkdownIt();
-    msvgMarkdownIt(md, { publicPath: "/images", sourcePath: "post.md" });
+    const emitted: string[] = [];
+    msvgMarkdownIt(md, { publicPath: "/images", sourcePath: "post.md", emitFile: (filePath) => emitted.push(filePath) });
     const html = md.render("```msvg\n" + diagram + "\n```");
     expect(html).toContain("<img");
     expect(html).toContain("/images/post/pipeline-");
+    expect(emitted[0]).toContain("pipeline-");
+  });
+
+  it("renders asset image HTML in explicit urlOnly mode without writing files", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "asset", publicPath: "/images", sourcePath: "post.md", urlOnly: true });
+    const env: { msvgDiagnostics?: Array<{ code: string }> } = {};
+    const html = md.render("```msvg\n" + diagram + "\n```", env);
+    expect(html).toContain("<img");
+    expect(html).toContain("/images/post/pipeline-");
+    expect((env.msvgDiagnostics ?? []).some((d) => d.code === "MSVG_ASSET_NO_OUTPUT")).toBe(false);
+  });
+
+  it("never emits a broken image when asset mode has no output target", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "asset", publicPath: "/images", sourcePath: "post.md" });
+    const env: { msvgDiagnostics?: Array<{ code: string; severity: string }> } = {};
+    const html = md.render("```msvg\n" + diagram + "\n```", env);
+    expect(html).not.toContain("<img");
+    expect(html).toContain("<svg");
+    const diag = (env.msvgDiagnostics ?? []).find((d) => d.code === "MSVG_ASSET_NO_OUTPUT");
+    expect(diag?.severity).toBe("error");
   });
 
   it("renders inline SVG when configured", () => {
