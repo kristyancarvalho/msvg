@@ -1,13 +1,13 @@
 {
   "coverage": {
-    "lines": 91.3,
-    "statements": 91.3,
-    "functions": 93.3,
-    "branches": 77.9
+    "lines": 92.2,
+    "statements": 92.2,
+    "functions": 94.4,
+    "branches": 80.1
   },
   "tests": {
-    "total": 276,
-    "passed": 276,
+    "total": 440,
+    "passed": 440,
     "failed": 0,
     "passPercentage": 100,
     "status": "passing"
@@ -15,39 +15,39 @@
   "packages": [
     {
       "package": "@markdown-utils/msvg-core",
-      "lines": 88.9,
-      "tests": 83,
-      "testsPassed": 83
+      "lines": 88.99,
+      "tests": 94,
+      "testsPassed": 94
     },
     {
       "package": "@markdown-utils/msvg-svg",
-      "lines": 93.77,
-      "tests": 162,
-      "testsPassed": 162
+      "lines": 94.39,
+      "tests": 288,
+      "testsPassed": 288
     },
     {
       "package": "@markdown-utils/msvg-remark",
-      "lines": 90.07,
-      "tests": 10,
-      "testsPassed": 10
+      "lines": 90.9,
+      "tests": 18,
+      "testsPassed": 18
     },
     {
       "package": "@markdown-utils/msvg-markdown-it",
-      "lines": 74.69,
-      "tests": 4,
-      "testsPassed": 4
+      "lines": 90.9,
+      "tests": 11,
+      "testsPassed": 11
     },
     {
       "package": "@markdown-utils/msvg-astro",
       "lines": 100,
-      "tests": 2,
-      "testsPassed": 2
+      "tests": 3,
+      "testsPassed": 3
     },
     {
       "package": "@markdown-utils/msvg-cli",
-      "lines": 95.8,
-      "tests": 15,
-      "testsPassed": 15
+      "lines": 93.78,
+      "tests": 26,
+      "testsPassed": 26
     }
   ]
 }
