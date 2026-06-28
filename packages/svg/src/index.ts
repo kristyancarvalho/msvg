@@ -1,9 +1,20 @@
 export { renderSvg, layoutDiagram } from "./render.js";
 export type { RenderSvgOptions, RenderSvgResult, LayoutOptions, LayoutResult } from "./render.js";
 
-export { resolveTheme } from "./theme.js";
-export type { ResolvedTheme, ThemeInput } from "./theme.js";
-export { BUILT_IN_THEME_NAMES } from "./theme.js";
+export { resolveTheme, resolveThemeResult, isValidColor, BUILT_IN_THEME_NAMES } from "./theme.js";
+export type {
+  ResolvedTheme,
+  ThemeInput,
+  CustomThemeInput,
+  ThemeResolution,
+  ResolveThemeOptions,
+  ThemeColorMode,
+  ThemeResolveMode,
+  ThemeOutputMode,
+  ThemeBackground,
+  SemanticTokens,
+  SemanticStyle,
+} from "./theme.js";
 
 export { escapeXml, escapeAttr, safeSvgId, sanitizeText } from "./escaping.js";
 

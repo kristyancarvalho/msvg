@@ -2,12 +2,16 @@ import type { Root } from "mdast";
 import type { Plugin } from "unified";
 import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import { parseAndValidate } from "@markdown-utils/msvg-core";
-import { renderSvg } from "@markdown-utils/msvg-svg";
+import { renderSvg, type ThemeInput, type ThemeResolveMode, type ThemeOutputMode, type ThemeBackground } from "@markdown-utils/msvg-svg";
 import { emitAsset, escapeHtml, imageHtml, willEmitAsset, type AssetOptions, type OutputMode } from "./assets.js";
 
 export interface RemarkMSVGOptions extends AssetOptions {
   output?: OutputMode | undefined;
   diagnostics?: MSVGDiagnostic[] | undefined;
+  theme?: ThemeInput | undefined;
+  themeMode?: ThemeResolveMode | undefined;
+  themeOutputMode?: ThemeOutputMode | undefined;
+  background?: ThemeBackground | undefined;
 }
 
 interface ParentNode {
@@ -52,7 +56,12 @@ export const remarkMSVG: Plugin<[RemarkMSVGOptions?], Root> = (options = {}) => 
         };
         return;
       }
-      const rendered = renderSvg(parsed.diagram);
+      const rendered = renderSvg(parsed.diagram, {
+        theme: options.theme,
+        themeMode: options.themeMode,
+        themeOutputMode: options.themeOutputMode,
+        background: options.background,
+      });
       diagnostics.push(...rendered.diagnostics);
       if (options.output === "inline") {
         parent.children![index] = { type: "html", value: rendered.svg };

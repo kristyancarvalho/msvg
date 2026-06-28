@@ -50,6 +50,21 @@ describe("msvgMarkdownIt", () => {
     expect(html).toContain("<title");
   });
 
+  it("threads theme output mode into inline rendering", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "inline", themeOutputMode: "css-variables" });
+    const html = md.render("```msvg\n" + diagram + "\n```");
+    expect(html).toContain("<style");
+    expect(html).toContain("var(--msvg-");
+  });
+
+  it("threads a dark theme into inline rendering", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "inline", theme: "dark" });
+    const html = md.render("```msvg\n" + diagram + "\n```");
+    expect(html).not.toContain("#faf9f7");
+  });
+
   it("keeps non-msvg fences on the default path", () => {
     const md = new MarkdownIt();
     msvgMarkdownIt(md);

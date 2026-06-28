@@ -185,8 +185,11 @@ export function svgRoot(
   const ariaLabelledBy = desc !== undefined && desc.length > 0
     ? `aria-labelledby="${titleId} ${descId}"`
     : `aria-labelledby="${titleId}"`;
-  const bgRect = `<rect width="${width}" height="${height}" fill="${escapeAttr(theme.background)}"/>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="${width}" height="${height}" role="img" ${ariaLabelledBy}><title id="${titleId}">${escapeXml(title)}</title>${descEl}${bgRect}${content}</svg>`;
+  const styleEl = theme.styleElement ?? "";
+  const bgRect = theme.background === "transparent"
+    ? ""
+    : `<rect width="${width}" height="${height}" fill="${escapeAttr(theme.background)}"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="${width}" height="${height}" role="img" ${ariaLabelledBy}><title id="${titleId}">${escapeXml(title)}</title>${descEl}${styleEl}${bgRect}${content}</svg>`;
 }
 
 export function captionText(
@@ -198,67 +201,51 @@ export function captionText(
   return `<text x="${cx}" y="${y}" text-anchor="middle" font-size="${DESC_FONT_SIZE}" font-family="${escapeAttr(theme.fontFamily)}" fill="${escapeAttr(theme.textMuted)}" font-style="italic">${escapeXml(caption)}</text>`;
 }
 
+function flowStyle(kind: string | undefined, theme: ResolvedTheme): { fill: string; stroke: string } {
+  return (
+    theme.semantic.flow[kind ?? "default"] ??
+    theme.semantic.flow.default ?? { fill: theme.surface, stroke: theme.border }
+  );
+}
+
+function architectureStyle(kind: string | undefined, theme: ResolvedTheme): { fill: string; stroke: string } {
+  return (
+    theme.semantic.architecture[kind ?? "default"] ??
+    theme.semantic.architecture.default ?? { fill: theme.surface, stroke: theme.border }
+  );
+}
+
+function comparisonStyle(tone: string | undefined, theme: ResolvedTheme): { fill: string; stroke: string } {
+  return (
+    theme.semantic.comparison[tone ?? "neutral"] ??
+    theme.semantic.comparison.neutral ?? { fill: theme.surface, stroke: theme.border }
+  );
+}
+
 export function kindFill(kind: string | undefined, theme: ResolvedTheme): string {
-  switch (kind) {
-    case "input": return theme.accentSoft;
-    case "output": return theme.accentSoft;
-    case "decision": return "#fff8e8";
-    case "warning": return "#fff3e0";
-    case "success": return "#e8f5ee";
-    case "process": return theme.surface;
-    default: return theme.surface;
-  }
+  return flowStyle(kind, theme).fill;
 }
 
 export function kindStroke(kind: string | undefined, theme: ResolvedTheme): string {
-  switch (kind) {
-    case "input": return theme.accent;
-    case "output": return theme.accent;
-    case "decision": return theme.warning;
-    case "warning": return theme.warning;
-    case "success": return theme.success;
-    default: return theme.border;
-  }
+  return flowStyle(kind, theme).stroke;
 }
 
 export function componentKindFill(kind: string | undefined, theme: ResolvedTheme): string {
-  switch (kind) {
-    case "client": return theme.accentSoft;
-    case "service": return theme.surface;
-    case "storage": return theme.surfaceMuted;
-    case "external": return theme.surfaceMuted;
-    case "build": return "#fff8e8";
-    case "content": return "#e8f5ee";
-    case "output": return theme.accentSoft;
-    default: return theme.surface;
-  }
+  return architectureStyle(kind, theme).fill;
+}
+
+export function componentKindStroke(kind: string | undefined, theme: ResolvedTheme): string {
+  return architectureStyle(kind, theme).stroke;
 }
 
 export function toneFill(tone: string | undefined, theme: ResolvedTheme): string {
-  switch (tone) {
-    case "positive": return "#e8f5ee";
-    case "warning": return "#fff3e0";
-    case "negative": return "#fdecea";
-    default: return theme.surface;
-  }
+  return comparisonStyle(tone, theme).fill;
 }
 
 export function toneStroke(tone: string | undefined, theme: ResolvedTheme): string {
-  switch (tone) {
-    case "positive": return theme.success;
-    case "warning": return theme.warning;
-    case "negative": return theme.danger;
-    default: return theme.border;
-  }
+  return comparisonStyle(tone, theme).stroke;
 }
 
 export function statusIndicatorColor(status: string | undefined, theme: ResolvedTheme): string {
-  switch (status) {
-    case "done": return theme.success;
-    case "current": return theme.accent;
-    case "future": return theme.textMuted;
-    case "risk": return theme.danger;
-    case "past": return theme.textMuted;
-    default: return theme.border;
-  }
+  return theme.semantic.status[status ?? "default"] ?? theme.semantic.status.default ?? theme.border;
 }
