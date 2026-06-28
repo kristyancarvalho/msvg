@@ -3,7 +3,7 @@ import type { Plugin } from "unified";
 import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import { parseAndValidate } from "@markdown-utils/msvg-core";
 import { renderSvg } from "@markdown-utils/msvg-svg";
-import { emitAsset, escapeHtml, imageHtml, type AssetOptions, type OutputMode } from "./assets.js";
+import { emitAsset, escapeHtml, imageHtml, willEmitAsset, type AssetOptions, type OutputMode } from "./assets.js";
 
 export interface RemarkMSVGOptions extends AssetOptions {
   output?: OutputMode | undefined;
@@ -55,6 +55,17 @@ export const remarkMSVG: Plugin<[RemarkMSVGOptions?], Root> = (options = {}) => 
       const rendered = renderSvg(parsed.diagram);
       diagnostics.push(...rendered.diagnostics);
       if (options.output === "inline") {
+        parent.children![index] = { type: "html", value: rendered.svg };
+        return;
+      }
+      if (!willEmitAsset(options) && options.urlOnly !== true) {
+        diagnostics.push({
+          code: "MSVG_ASSET_NO_OUTPUT",
+          severity: "error",
+          message: "asset output requires outputDir, emitFile, or urlOnly; rendered inline to avoid a broken image reference",
+          filePath: sourcePath,
+          line,
+        });
         parent.children![index] = { type: "html", value: rendered.svg };
         return;
       }
