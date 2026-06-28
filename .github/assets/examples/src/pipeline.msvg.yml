@@ -1,7 +1,7 @@
 type: flow
 title: "How MSVG renders a diagram"
 description: "Author text flows through parsing and layout into a static, accessible SVG asset."
-theme: paper
+theme: dark
 direction: LR
 
 nodes:

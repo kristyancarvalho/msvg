@@ -1,7 +1,7 @@
 type: sequence
 title: "Rendering a post with MSVG"
 description: "The interaction between an author, the Markdown file, the build, and the reader's browser."
-theme: mono
+theme: dark
 
 participants:
   author: "Author"
