@@ -39,11 +39,14 @@ const html = md.render(markdownSource);
 | `sourcePath` | Source file path used for naming and diagnostics. |
 | `diagnostics` | An array that collects diagnostics produced during rendering. |
 | `emitFile` | An optional callback that receives `(filePath, contents)` instead of writing to disk. |
+| `urlOnly` | In asset mode, emit a URL-only reference even without a write target (you place the file yourself). |
+| `theme`, `themeMode`, `themeOutputMode`, `background` | Theming options passed through to the renderer. |
 
 ## Behavior
 
 - Only `msvg` fences are transformed; other fenced blocks render normally.
 - Asset mode is the safe default and produces image references suitable for feeds.
+- Asset mode requires a write target (`outputDir` or `emitFile`). Without one, and without `urlOnly`, the plugin reports `MSVG_ASSET_NO_OUTPUT` and falls back to inline SVG rather than emitting a broken image reference.
 - Output requires no runtime JavaScript and is friendly to HTML sanitizers.
 
 ## License

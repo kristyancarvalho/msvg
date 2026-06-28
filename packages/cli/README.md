@@ -18,6 +18,14 @@ Check that every diagram in your Markdown is valid:
 msvg check "content/**/*.md"
 ```
 
+`check` understands two kinds of input. Markdown files (`.md`, `.markdown`, `.mdx`) are scanned for fenced `msvg` blocks, while standalone `.msvg.yml`, `.msvg.yaml`, and `.msvg.json` files are validated as a whole document. You can also check a single file:
+
+```bash
+msvg check diagram.msvg.yml
+```
+
+A missing path, an empty glob, or a directory passed as a file produces a diagnostic and a non-zero exit code, so broken inputs never pass silently.
+
 Build SVG assets from your Markdown:
 
 ```bash
