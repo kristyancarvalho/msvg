@@ -106,8 +106,8 @@ export async function emitAsset(title: string, svg: string, options: AssetOption
   return { filePath, publicUrl, written };
 }
 
-export function imageHtml(src: string, title: string, caption?: string | undefined, diagramType?: string | undefined): string {
-  const img = `<img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" loading="lazy" decoding="async">`;
+export function imageHtml(src: string, alt: string, caption?: string | undefined, diagramType?: string | undefined): string {
+  const img = `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">`;
   if (caption !== undefined && caption.trim().length > 0) {
     return `<figure class="msvg msvg-${escapeHtml(diagramType ?? "diagram")}">${img}<figcaption>${escapeHtml(caption)}</figcaption></figure>`;
   }

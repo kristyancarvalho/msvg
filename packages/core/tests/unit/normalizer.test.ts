@@ -348,11 +348,13 @@ describe("normalizeDiagram — base behavior", () => {
       ...flowRaw,
       description: "A description",
       caption: "A caption",
+      alt: "Alt text",
       id: "my-diagram",
     };
     const result = normalizeDiagram(raw);
     expect(result.diagram?.description).toBe("A description");
     expect(result.diagram?.caption).toBe("A caption");
+    expect(result.diagram?.alt).toBe("Alt text");
     expect(result.diagram?.id).toBe("my-diagram");
   });
 });

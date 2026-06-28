@@ -138,6 +138,7 @@ function extractBase(
       title: (title ?? "").trim(),
       description: asString(raw["description"]),
       caption: asString(raw["caption"]),
+      alt: asString(raw["alt"]),
       theme: resolvedTheme,
       id: asString(raw["id"]),
     },

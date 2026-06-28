@@ -81,4 +81,21 @@ describe("msvgMarkdownIt", () => {
     expect(html).toContain("msvg-error");
     expect(env.msvgDiagnostics?.length).toBeGreaterThan(0);
   });
+
+  it("uses the diagram description as image alt text", () => {
+    const md = new MarkdownIt();
+    const described = "type: flow\ntitle: Pipeline\ndescription: A described pipeline\nnodes:\n  a: Start\n  b: End\nedges:\n  - a -> b";
+    msvgMarkdownIt(md, { publicPath: "/images", sourcePath: "post.md", emitFile: () => {} });
+    const html = md.render("```msvg\n" + described + "\n```");
+    expect(html).toContain('alt="A described pipeline"');
+  });
+
+  it("gives same-title inline diagrams unique element ids", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "inline" });
+    const html = md.render("```msvg\n" + diagram + "\n```\n\n```msvg\n" + diagram + "\n```");
+    const ids = [...html.matchAll(/id="([^"]*-title)"/g)].map((m) => m[1]);
+    expect(ids.length).toBe(2);
+    expect(ids[0]).not.toBe(ids[1]);
+  });
 });
