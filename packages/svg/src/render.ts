@@ -1,12 +1,22 @@
 import type { DiagramDocument, MSVGDiagnostic } from "@markdown-utils/msvg-core";
-import type { ResolvedTheme, ThemeInput } from "./theme.js";
-import { resolveTheme } from "./theme.js";
+import type {
+  ResolvedTheme,
+  ThemeInput,
+  ThemeResolveMode,
+  ThemeOutputMode,
+  ThemeBackground,
+} from "./theme.js";
+import { resolveThemeResult } from "./theme.js";
 import { layoutAndRender } from "./layout/index.js";
 import { safeSvgId } from "./escaping.js";
 
 export interface RenderSvgOptions {
   theme?: ThemeInput;
   diagramId?: string;
+  themeMode?: ThemeResolveMode;
+  themeOutputMode?: ThemeOutputMode;
+  background?: ThemeBackground;
+  idSalt?: string;
 }
 
 export interface RenderSvgResult {
@@ -18,6 +28,10 @@ export interface RenderSvgResult {
 export interface LayoutOptions {
   theme?: ThemeInput;
   diagramId?: string;
+  themeMode?: ThemeResolveMode;
+  themeOutputMode?: ThemeOutputMode;
+  background?: ThemeBackground;
+  idSalt?: string;
 }
 
 export interface LayoutResult {
@@ -53,24 +67,44 @@ function withDescription(diagram: DiagramDocument): DiagramDocument {
 }
 
 function resolveDiagramId(diagram: DiagramDocument, options: RenderSvgOptions | LayoutOptions): string {
-  return safeSvgId(options.diagramId ?? diagram.id ?? diagram.title, "d");
+  const base = safeSvgId(options.diagramId ?? diagram.id ?? diagram.title, "d");
+  if (options.idSalt !== undefined && options.idSalt.length > 0) {
+    return `${base}-${safeSvgId(options.idSalt, "s")}`;
+  }
+  return base;
 }
 
 export function renderSvg(
   diagram: DiagramDocument,
   options: RenderSvgOptions = {}
 ): RenderSvgResult {
-  const theme = resolveTheme(options.theme ?? (diagram.theme as ThemeInput | undefined));
+  const resolution = resolveThemeResult(options.theme ?? (diagram.theme as ThemeInput | undefined), {
+    mode: options.themeMode,
+    outputMode: options.themeOutputMode,
+    background: options.background,
+  });
   const diagramId = resolveDiagramId(diagram, options);
-  const { svg, diagnostics } = layoutAndRender(withDescription(diagram), theme, diagramId);
-  return { svg, diagnostics, theme };
+  const rendered = layoutAndRender(withDescription(diagram), resolution.theme, diagramId);
+  return {
+    svg: rendered.svg,
+    diagnostics: [...resolution.diagnostics, ...rendered.diagnostics],
+    theme: resolution.theme,
+  };
 }
 
 export function layoutDiagram(
   diagram: DiagramDocument,
   options: LayoutOptions = {}
 ): LayoutResult {
-  const theme = resolveTheme(options.theme ?? (diagram.theme as ThemeInput | undefined));
+  const resolution = resolveThemeResult(options.theme ?? (diagram.theme as ThemeInput | undefined), {
+    mode: options.themeMode,
+    outputMode: options.themeOutputMode,
+    background: options.background,
+  });
   const diagramId = resolveDiagramId(diagram, options);
-  return layoutAndRender(withDescription(diagram), theme, diagramId);
+  const rendered = layoutAndRender(withDescription(diagram), resolution.theme, diagramId);
+  return {
+    svg: rendered.svg,
+    diagnostics: [...resolution.diagnostics, ...rendered.diagnostics],
+  };
 }
