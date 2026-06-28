@@ -1,34 +1,39 @@
-name: Task / Improvement
-description: Track refactors, improvements, and technical tasks
-title: "[TASK] "
+name: Task
+description: Track operational, structural, testing, documentation, release, or maintenance work
+title: "task/<area>: "
 labels: ["task"]
 body:
   - type: dropdown
     id: area
     attributes:
       label: Area
-      description: Which part of the project is affected?
+      description: Which part of MSVG is affected?
       options:
-        - config
-        - parser
+        - repo
+        - core
+        - svg
         - layout
-        - render
-        - ui
-        - input
-        - watch
+        - theme
+        - remark
+        - markdown-it
+        - astro
+        - cli
+        - docker
+        - examples
+        - test
         - docs
-        - packaging
+        - accessibility
         - release
+        - ci
         - other
     validations:
       required: true
 
   - type: textarea
-    id: context
+    id: goal
     attributes:
-      label: Context
-      description: Why is this change needed?
-      placeholder: Explain the current limitation or pain point.
+      label: Problem or goal
+      description: Why is this work needed?
     validations:
       required: true
 
@@ -36,10 +41,23 @@ body:
     id: proposal
     attributes:
       label: Proposed change
-      description: What should be changed?
-      placeholder: Describe the intended solution.
+      description: What should be done?
     validations:
       required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is included in this work?
+    validations:
+      required: true
+
+  - type: textarea
+    id: outofscope
+    attributes:
+      label: Out of scope
+      description: What is explicitly not included?
 
   - type: textarea
     id: acceptance
@@ -54,8 +72,21 @@ body:
       required: true
 
   - type: textarea
-    id: notes
+    id: validation
     attributes:
-      label: Notes
-      description: Optional implementation details, references, or edge cases.
-      placeholder: Add any extra context here.
+      label: Validation commands
+      description: Docker commands that confirm the work.
+      value: |
+        docker compose run --rm msvg npm run check
+        docker compose run --rm msvg npm run test
+        docker compose run --rm msvg npm run build
+        docker compose run --rm msvg npm run verify
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: milestone
+    attributes:
+      label: Related release milestone
+      placeholder: v0.2.0

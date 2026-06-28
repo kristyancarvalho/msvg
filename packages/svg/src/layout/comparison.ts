@@ -16,7 +16,7 @@ import {
   toneFill,
   toneStroke,
 } from "../primitives.js";
-import { escapeAttr } from "../escaping.js";
+import { escapeAttr, escapeXml } from "../escaping.js";
 
 const PAD = 32;
 const COL_PAD_X = 16;
@@ -26,6 +26,19 @@ const ITEM_V_GAP = 10;
 const COL_GAP = 20;
 const ITEM_PAD_Y = 8;
 const ITEM_RADIUS = 6;
+const TONE_LINE_H = DESC_FONT_SIZE * LINE_HEIGHT;
+
+const TONE_LABELS: Record<string, string> = {
+  neutral: "Neutral",
+  positive: "Pros",
+  negative: "Cons",
+  warning: "Caution",
+};
+
+function toneLabel(tone: string | undefined): string {
+  if (tone === undefined) return "Neutral";
+  return TONE_LABELS[tone] ?? tone;
+}
 
 export function renderComparison(
   diagram: ComparisonDiagram,
@@ -41,7 +54,7 @@ export function renderComparison(
 
   const colMetrics = diagram.columns.map((col) => {
     const headerLines = wrapText(col.label, colW - COL_PAD_X * 2);
-    const headerH = COL_PAD_Y * 2 + textBlockHeight(headerLines.length, FONT_SIZE);
+    const headerH = COL_PAD_Y * 2 + TONE_LINE_H + textBlockHeight(headerLines.length, FONT_SIZE);
 
     const itemMetrics = col.items.map((item) => {
       const lines = wrapText(item, colW - COL_PAD_X * 2 - 16, DESC_FONT_SIZE);
@@ -57,9 +70,13 @@ export function renderComparison(
 
   const maxColH = colMetrics.reduce((max, c) => Math.max(max, c.totalH), 0);
 
-  const verdictH = diagram.verdict
-    ? COL_PAD_Y + textBlockHeight(1, DESC_FONT_SIZE) + COL_PAD_Y
+  const verdictLines = diagram.verdict
+    ? wrapText(diagram.verdict, totalW - PAD * 4, DESC_FONT_SIZE)
+    : [];
+  const verdictBoxH = diagram.verdict
+    ? textBlockHeight(verdictLines.length, DESC_FONT_SIZE) + COL_PAD_Y
     : 0;
+  const verdictH = diagram.verdict ? COL_PAD_Y + verdictBoxH : 0;
   const captionH = diagram.caption ? FONT_SIZE * LINE_HEIGHT + 12 : 0;
   const svgH = PAD + maxColH + verdictH + PAD + captionH;
 
@@ -71,7 +88,8 @@ export function renderComparison(
 
     const headerRect = roundedBox(x, y, colW, cm.headerH, BOX_RADIUS, fill, stroke, 2);
     const headerCx = x + colW / 2;
-    const headerText = multilineText(cm.headerLines, headerCx, y + COL_PAD_Y, FONT_SIZE, theme.text, theme.fontFamily, "700");
+    const toneEl = `<text x="${headerCx}" y="${y + COL_PAD_Y + DESC_FONT_SIZE - 2}" text-anchor="middle" font-size="${DESC_FONT_SIZE}" font-family="${escapeAttr(theme.fontFamily)}" font-weight="600" letter-spacing="0.5" fill="${escapeAttr(theme.textMuted)}">${escapeXml(toneLabel(cm.col.tone))}</text>`;
+    const headerText = multilineText(cm.headerLines, headerCx, y + COL_PAD_Y + TONE_LINE_H, FONT_SIZE, theme.text, theme.fontFamily, "700");
 
     let iy = y + cm.headerH + COL_PAD_Y;
     const itemEls = cm.itemMetrics.map((item) => {
@@ -91,17 +109,15 @@ export function renderComparison(
       return itemRect + bullet + itemText;
     }).join("");
 
-    return headerRect + headerText + itemEls;
+    return headerRect + toneEl + headerText + itemEls;
   }).join("");
 
   let verdictEl = "";
   if (diagram.verdict) {
     const vy = PAD + maxColH + COL_PAD_Y;
-    const vLines = wrapText(diagram.verdict, totalW - PAD * 4, DESC_FONT_SIZE);
-    const vH = textBlockHeight(vLines.length, DESC_FONT_SIZE) + COL_PAD_Y;
     verdictEl =
-      roundedBox(PAD, vy, totalW - PAD * 2, vH, BOX_RADIUS, theme.surfaceMuted, theme.border, 1) +
-      multilineText(vLines, totalW / 2, vy + COL_PAD_Y / 2, DESC_FONT_SIZE, theme.textMuted, theme.fontFamily, "normal");
+      roundedBox(PAD, vy, totalW - PAD * 2, verdictBoxH, BOX_RADIUS, theme.surfaceMuted, theme.border, 1) +
+      multilineText(verdictLines, totalW / 2, vy + COL_PAD_Y / 2, DESC_FONT_SIZE, theme.textMuted, theme.fontFamily, "normal");
   }
 
   let capEl = "";

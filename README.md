@@ -62,12 +62,12 @@ A typical flow: you author a fenced `msvg` block, an integration (`@markdown-uti
 
 ## See MSVG in action
 
-These diagrams were produced by MSVG from short YAML sources, each using a different built-in theme. The sources live in [`.github/assets/examples/src`](.github/assets/examples/src) and the rendered images in [`.github/assets/examples`](.github/assets/examples).
+These diagrams were produced by MSVG from short YAML sources, all using the `dark` built-in theme. The sources live in [`.github/assets/examples/src`](.github/assets/examples/src) and the rendered images in [`.github/assets/examples`](.github/assets/examples).
 
 <table>
   <tr>
     <td width="50%" valign="top">
-      <p><strong>Sequence</strong> &mdash; <code>mono</code> theme</p>
+      <p><strong>Sequence</strong> &mdash; <code>dark</code> theme</p>
       <img alt="A sequence diagram showing an author, a Markdown file, the static build, and the browser exchanging messages" src=".github/assets/examples/rendering.svg" width="100%">
     </td>
     <td width="50%" valign="top">
@@ -77,7 +77,7 @@ These diagrams were produced by MSVG from short YAML sources, each using a diffe
   </tr>
 </table>
 
-The hero diagram above the introduction is a `flow` diagram in the `paper` theme, and the ecosystem diagram is an `architecture` diagram in the `neutral` theme. Together they cover four diagram types and all four built-in themes. See [Themes](#themes) for the full list and [Regenerating the README diagrams](#regenerating-the-readme-diagrams) to rebuild these images.
+The hero diagram above the introduction is a `flow` diagram and the ecosystem diagram is an `architecture` diagram, both in the `dark` theme. Together with the gallery they cover four diagram types, all rendered with the `dark` theme. See [Themes](#themes) for the full list of built-in themes and [Regenerating the README diagrams](#regenerating-the-readme-diagrams) to rebuild these images.
 
 ## Installation
 
@@ -112,6 +112,12 @@ For the command-line tool:
 ```bash
 npm install @markdown-utils/msvg-cli
 ```
+
+### ESM and Node.js requirements
+
+Every MSVG package is **ESM-only**. They publish an `import` entry point and no CommonJS build, so you load them with `import` (or a dynamic `import()` from CommonJS), not `require`.
+
+Use **Node.js 18 or newer**. MSVG is developed and tested on Node.js 22, which is the version used by the Docker workflow below.
 
 ## Quick start: write a diagram
 
@@ -261,6 +267,17 @@ const html = md.render(markdownSource);
 
 In `asset` mode it emits RSS-safe image references. In `inline` mode it embeds the SVG directly.
 
+### Asset output requirements
+
+Asset mode writes an SVG file and then references it with an `<img>` tag. For that reference to be valid, MSVG must actually write the file somewhere. So in `asset` mode you must provide at least one write target:
+
+- `outputDir` — a directory MSVG writes the `.svg` file into, paired with `publicPath` for the URL prefix, or
+- `emitFile` — a callback that receives the file name and SVG contents and is responsible for writing it (useful for bundlers and custom pipelines).
+
+If neither is configured, MSVG will not emit a broken image reference. Instead it reports an `MSVG_ASSET_NO_OUTPUT` error diagnostic and falls back to inline SVG so the diagram is never lost. If you intentionally want a URL-only reference (for example, you upload the assets separately), set `urlOnly: true` to acknowledge that you are responsible for putting the file at the referenced path.
+
+The Astro integration sets `outputDir` to `public/msvg` by default, so it always writes.
+
 ## Using the CLI
 
 Install `@markdown-utils/msvg-cli` and run the `msvg` command.
@@ -270,6 +287,14 @@ Check that every diagram in your Markdown files is valid:
 ```bash
 msvg check "content/**/*.md"
 ```
+
+`check` understands both Markdown and standalone diagram files. Markdown files (`.md`, `.markdown`, `.mdx`) are scanned for fenced `msvg` blocks, while standalone `.msvg.yml`, `.msvg.yaml`, and `.msvg.json` files are validated as a whole. You can check a single file or a glob:
+
+```bash
+msvg check diagram.msvg.yml
+```
+
+When a path is missing, a glob matches nothing, or a directory is passed where a file is expected, `check` reports a diagnostic and exits non-zero, so broken inputs never pass silently.
 
 Build SVG assets from your Markdown files:
 
@@ -444,7 +469,8 @@ Common top-level fields:
 | `type` | Yes | One of the supported diagram types. |
 | `title` | Yes | A human-readable title. Becomes the SVG `<title>`. |
 | `description` | No | An accessible description. Becomes the SVG `<desc>`. |
-| `caption` | No | A visible caption when the target supports it. |
+| `alt` | No | Explicit alternative text for asset-mode images. Takes priority over `description`. |
+| `caption` | No | A visible caption when the target supports it. Rendered as a `<figcaption>` in asset mode. |
 | `theme` | No | A built-in theme name or custom theme tokens. |
 | `direction` | Depends | Layout direction for types that support it. |
 | `id` | No | A stable diagram id; otherwise one is generated. |
@@ -463,7 +489,7 @@ Both normalize to the same internal structure.
 
 ## Themes
 
-Four built-in themes are available: `paper` (the default), `neutral`, `mono`, and `dark`. Set one with the `theme` field:
+MSVG ships four built-in themes: `paper` (the default), `neutral`, `mono`, and `dark`. Set one with the `theme` field:
 
 ```msvg
 type: flow
@@ -479,17 +505,71 @@ edges:
   - a -> b: "go"
 ```
 
-You can also pass custom theme tokens. Only validated tokens are used, so a theme can never inject unsafe content.
+### Custom themes
+
+`theme` can also be an object that customizes a built-in theme. A custom theme can `extend` a built-in, pick a light or dark base with `mode`, and override individual color tokens. Every token is validated, so a theme can never inject unsafe content: only hex colors, `rgb()`/`rgba()`, a small allowlist of safe named colors, and `transparent` are accepted. Anything else (a raw `url(...)`, `javascript:`, a stray `style` string) is rejected with a diagnostic and the safe base value is kept.
+
+```msvg
+type: flow
+title: "Brand themed flow"
+theme:
+  extends: paper
+  mode: light
+  tokens:
+    color:
+      accent: "#6d28d9"
+      canvas: "#fbfaff"
+direction: LR
+nodes:
+  a: { label: "Start" }
+  b: { label: "End" }
+edges:
+  - a -> b: "go"
+```
+
+### Output modes
+
+By default MSVG resolves a theme to concrete colors and writes them straight into the SVG. This is the most portable mode: it works in RSS feeds, email-safe contexts, and anywhere CSS is stripped. Integrations and the rendering API can also request other output modes through `themeOutputMode`:
+
+| Mode | What it produces | When to use it |
+|---|---|---|
+| `static` (default) | Concrete resolved colors, no CSS or scripts. | RSS, email, maximum portability. |
+| `css-variables` | A scoped `<style>` block defining `--msvg-*` variables, with each color emitted as `var(--msvg-token, fallback)`. | Sites that want to re-theme diagrams with CSS. |
+| `media-query` | The same variables plus a `@media (prefers-color-scheme: dark)` block built from the `dark` theme. | Diagrams that should follow the reader's system light/dark setting. |
+
+Every CSS variable always carries a concrete fallback, so the diagram still renders correctly when the variables are not overridden. You can also pass `themeMode: "light" | "dark" | "auto"` to choose the base color mode, and `background: "auto" | "solid" | "transparent"` to control the diagram background.
+
+When you use an integration, these are plain options:
+
+```ts
+remark().use(remarkMSVG, {
+  output: "inline",
+  theme: "dark",
+  themeOutputMode: "css-variables",
+});
+```
 
 ## Accessibility guarantees
 
 MSVG is designed so generated diagrams are usable by everyone:
 
-- Every SVG includes a `<title>` from your diagram `title`.
-- A `<desc>` is included when you provide a `description` or one can be generated.
+- Every SVG includes a `<title>` from your diagram `title`, a `<desc>` when available, and a `role="img"` with `aria-labelledby` wiring the two together.
+- The `<title>`, `<desc>`, and marker ids are unique per diagram, so two diagrams with the same title on one page never collide. Integrations salt the ids automatically.
+- A `<desc>` is included when you provide a `description` or one can be generated from the diagram.
 - All user-provided text is escaped before it enters the SVG.
-- Meaning is carried by shape, label, spacing, and grouping, not color alone.
-- Generated images are referenced with descriptive `alt` text in asset mode.
+- Meaning is carried by shape, label, spacing, and grouping, not color alone. Timeline statuses (`Done`, `At risk`, `Blocked`, and so on) and comparison tones (`Pros`, `Cons`, `Caution`, `Neutral`) render as text labels, not just colored fills.
+- A visible `caption` is rendered as a `<figcaption>` in asset mode, and asset images use `loading="lazy"` and `decoding="async"`.
+
+### Asset alt text
+
+In asset mode the generated `<img>` always has descriptive `alt` text. MSVG picks the first available value in this order:
+
+1. an explicit `alt` field on the diagram,
+2. the diagram `description`,
+3. a generated description derived from the diagram contents,
+4. the diagram `title`.
+
+So setting `alt` or `description` on a diagram gives you full control over the alternative text without changing the visual output.
 
 ## Security guarantees
 
@@ -593,6 +673,10 @@ This runs every package's tests with coverage, then [`scripts/quality-report.mjs
 - `quality.json` holds the same numbers, including a per-package breakdown.
 
 On pushes to `dev`, the workflow refreshes these badge files automatically so the README always reflects the latest run.
+
+### The one Docker exception: publishing
+
+All development and CI verification run inside the `msvg` Docker service. The single documented exception is the npm publish workflow in [`.github/workflows/publish.yml`](.github/workflows/publish.yml), which runs on the GitHub Actions host rather than in Docker. This is required because npm trusted publishing uses OIDC (`id-token: write`), which is only available to the host runner. The publish job still runs the same `verify` gate before publishing, so the release is held to the same standard.
 
 ## Development documentation
 

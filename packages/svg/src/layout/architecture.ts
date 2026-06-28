@@ -182,6 +182,9 @@ export function renderArchitecture(
     return rect + label;
   }).join("");
 
+  let connMaxX = 0;
+  let connMaxY = 0;
+
   const connEls = diagram.connections.map((conn) => {
     const fromBox = boxMap.get(conn.from);
     const toBox = boxMap.get(conn.to);
@@ -230,8 +233,12 @@ export function renderArchitecture(
       const midY = (fromCy + toCy) / 2;
       const tw = estimateTextWidth(conn.label, DESC_FONT_SIZE) + 8;
       const th = DESC_FONT_SIZE + 4;
+      const rx = Math.max(2, midX - tw / 2);
+      const ry = Math.max(2, midY - th / 2);
+      connMaxX = Math.max(connMaxX, rx + tw);
+      connMaxY = Math.max(connMaxY, ry + th);
       labelEl =
-        `<rect x="${midX - tw / 2}" y="${midY - th / 2}" width="${tw}" height="${th}" rx="3" fill="${escapeAttr(theme.background)}" opacity="0.85"/>` +
+        `<rect x="${rx}" y="${ry}" width="${tw}" height="${th}" rx="3" fill="${escapeAttr(theme.background)}" opacity="0.85"/>` +
         `<text x="${midX}" y="${midY + DESC_FONT_SIZE / 2 - 1}" text-anchor="middle" font-size="${DESC_FONT_SIZE}" font-family="${escapeAttr(theme.fontFamily)}" fill="${escapeAttr(theme.textMuted)}">${escapeXml(conn.label)}</text>`;
     }
 
@@ -256,14 +263,15 @@ export function renderArchitecture(
   }).join("");
 
   const captionH = diagram.caption ? FONT_SIZE * LINE_HEIGHT + 12 : 0;
-  const svgW = Math.max(totalW, 400);
-  const svgH = totalH + captionH;
+  const contentH = Math.max(totalH, connMaxY + PAD);
+  const svgW = Math.max(totalW, connMaxX + PAD, 400);
+  const svgH = contentH + captionH;
 
   const defs = `<defs>${arrowMarker(markerId, theme.borderStrong)}</defs>`;
 
   let capEl = "";
   if (diagram.caption) {
-    capEl = captionText(diagram.caption, svgW / 2, totalH + captionH - 8, theme);
+    capEl = captionText(diagram.caption, svgW / 2, contentH + captionH - 8, theme);
   }
 
   const content = defs + groupEls + connEls + compEls + capEl;

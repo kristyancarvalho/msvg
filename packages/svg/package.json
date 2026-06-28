@@ -1,6 +1,6 @@
 {
   "name": "@markdown-utils/msvg-svg",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MSVG SVG layout engine and renderer",
   "license": "MIT",
   "author": "Kristyan Carvalho",
@@ -37,7 +37,11 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --out-dir dist --clean",
     "check": "tsc --noEmit",
@@ -47,6 +51,6 @@
     "test:snapshots": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@markdown-utils/msvg-core": "^0.1.0"
+    "@markdown-utils/msvg-core": "^0.2.0"
   }
 }

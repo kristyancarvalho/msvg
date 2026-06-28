@@ -81,13 +81,13 @@ function validateUnknownFields(
   return diagnostics;
 }
 
-const FLOW_KNOWN_FIELDS = ["type", "title", "description", "caption", "theme", "id", "direction", "nodes", "edges", "groups"];
-const MINDMAP_KNOWN_FIELDS = ["type", "title", "description", "caption", "theme", "id", "root", "branches"];
-const LAYERS_KNOWN_FIELDS = ["type", "title", "description", "caption", "theme", "id", "direction", "layers"];
-const COMPARISON_KNOWN_FIELDS = ["type", "title", "description", "caption", "theme", "id", "columns", "verdict"];
-const SEQUENCE_KNOWN_FIELDS = ["type", "title", "description", "caption", "theme", "id", "participants", "messages"];
-const TIMELINE_KNOWN_FIELDS = ["type", "title", "description", "caption", "theme", "id", "events"];
-const ARCHITECTURE_KNOWN_FIELDS = ["type", "title", "description", "caption", "theme", "id", "direction", "components", "groups", "connections"];
+const FLOW_KNOWN_FIELDS = ["type", "title", "description", "caption", "alt", "theme", "id", "direction", "nodes", "edges", "groups"];
+const MINDMAP_KNOWN_FIELDS = ["type", "title", "description", "caption", "alt", "theme", "id", "root", "branches"];
+const LAYERS_KNOWN_FIELDS = ["type", "title", "description", "caption", "alt", "theme", "id", "direction", "layers"];
+const COMPARISON_KNOWN_FIELDS = ["type", "title", "description", "caption", "alt", "theme", "id", "columns", "verdict"];
+const SEQUENCE_KNOWN_FIELDS = ["type", "title", "description", "caption", "alt", "theme", "id", "participants", "messages"];
+const TIMELINE_KNOWN_FIELDS = ["type", "title", "description", "caption", "alt", "theme", "id", "events"];
+const ARCHITECTURE_KNOWN_FIELDS = ["type", "title", "description", "caption", "alt", "theme", "id", "direction", "components", "groups", "connections"];
 
 function validateFlowDiagram(
   diagram: FlowDiagram,

@@ -2,12 +2,16 @@ import type { Root } from "mdast";
 import type { Plugin } from "unified";
 import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import { parseAndValidate } from "@markdown-utils/msvg-core";
-import { renderSvg } from "@markdown-utils/msvg-svg";
-import { emitAsset, escapeHtml, imageHtml, type AssetOptions, type OutputMode } from "./assets.js";
+import { renderSvg, type ThemeInput, type ThemeResolveMode, type ThemeOutputMode, type ThemeBackground } from "@markdown-utils/msvg-svg";
+import { emitAsset, escapeHtml, imageHtml, willEmitAsset, type AssetOptions, type OutputMode } from "./assets.js";
 
 export interface RemarkMSVGOptions extends AssetOptions {
   output?: OutputMode | undefined;
   diagnostics?: MSVGDiagnostic[] | undefined;
+  theme?: ThemeInput | undefined;
+  themeMode?: ThemeResolveMode | undefined;
+  themeOutputMode?: ThemeOutputMode | undefined;
+  background?: ThemeBackground | undefined;
 }
 
 interface ParentNode {
@@ -52,16 +56,33 @@ export const remarkMSVG: Plugin<[RemarkMSVGOptions?], Root> = (options = {}) => 
         };
         return;
       }
-      const rendered = renderSvg(parsed.diagram);
+      const rendered = renderSvg(parsed.diagram, {
+        theme: options.theme,
+        themeMode: options.themeMode,
+        themeOutputMode: options.themeOutputMode,
+        background: options.background,
+        idSalt: `${index}-${line ?? 0}`,
+      });
       diagnostics.push(...rendered.diagnostics);
       if (options.output === "inline") {
+        parent.children![index] = { type: "html", value: rendered.svg };
+        return;
+      }
+      if (!willEmitAsset(options) && options.urlOnly !== true) {
+        diagnostics.push({
+          code: "MSVG_ASSET_NO_OUTPUT",
+          severity: "error",
+          message: "asset output requires outputDir, emitFile, or urlOnly; rendered inline to avoid a broken image reference",
+          filePath: sourcePath,
+          line,
+        });
         parent.children![index] = { type: "html", value: rendered.svg };
         return;
       }
       const asset = await emitAsset(parsed.diagram.title, rendered.svg, { ...options, sourcePath });
       parent.children![index] = {
         type: "html",
-        value: imageHtml(asset.publicUrl, parsed.diagram.title, parsed.diagram.caption, parsed.diagram.type),
+        value: imageHtml(asset.publicUrl, rendered.altText, parsed.diagram.caption, parsed.diagram.type),
       };
     });
     await Promise.all(tasks);

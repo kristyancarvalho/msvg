@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { wrapText, estimateTextWidth, textBlockHeight, maxLineWidth, FONT_SIZE } from "../../src/text.js";
+import { wrapText, breakLongWord, estimateTextWidth, textBlockHeight, maxLineWidth, FONT_SIZE } from "../../src/text.js";
 
 describe("estimateTextWidth", () => {
   it("returns 0 for empty string", () => {
@@ -34,11 +34,25 @@ describe("wrapText", () => {
     expect(rejoined).toBe(long);
   });
 
-  it("handles single word longer than maxWidth", () => {
+  it("breaks a single unbreakable word longer than maxWidth into multiple lines", () => {
     const word = "superlongwordthatexceedsmaxwidth";
-    const lines = wrapText(word, 10);
-    expect(lines).toHaveLength(1);
-    expect(lines[0]?.text).toBe(word);
+    const lines = wrapText(word, 40);
+    expect(lines.length).toBeGreaterThan(1);
+    const rejoined = lines.map((l) => l.text).join("");
+    expect(rejoined).toBe(word);
+    for (const line of lines) {
+      expect(line.width).toBeLessThanOrEqual(40);
+    }
+  });
+
+  it("breaks a long url so it stays within the available width", () => {
+    const url = "https://example.com/very/long/path/segment/that/never/breaks";
+    const lines = wrapText(url, 120, 12);
+    expect(lines.length).toBeGreaterThan(1);
+    for (const line of lines) {
+      expect(line.width).toBeLessThanOrEqual(120);
+    }
+    expect(lines.map((l) => l.text).join("")).toBe(url);
   });
 
   it("returns empty for empty string", () => {
@@ -57,6 +71,27 @@ describe("wrapText", () => {
       expect(typeof line.width).toBe("number");
       expect(line.width).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("breakLongWord", () => {
+  it("returns the word unchanged when it already fits", () => {
+    expect(breakLongWord("short", 500)).toEqual(["short"]);
+  });
+
+  it("splits an over-long word into chunks that each fit", () => {
+    const chunks = breakLongWord("abcdefghijklmnop", 40, 12);
+    expect(chunks.length).toBeGreaterThan(1);
+    expect(chunks.join("")).toBe("abcdefghijklmnop");
+    for (const chunk of chunks) {
+      expect(estimateTextWidth(chunk, 12)).toBeLessThanOrEqual(40);
+    }
+  });
+
+  it("always makes progress even for tiny widths", () => {
+    const chunks = breakLongWord("abcdef", 1);
+    expect(chunks.join("")).toBe("abcdef");
+    expect(chunks.length).toBe(6);
   });
 });
 

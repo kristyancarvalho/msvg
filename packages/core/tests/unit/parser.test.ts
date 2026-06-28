@@ -68,4 +68,30 @@ edges:
     expect(result.raw).toBeNull();
     expect(result.diagnostics.length).toBeGreaterThan(0);
   });
+
+  it("reports a diagnostic for duplicate mapping keys", () => {
+    const source = `type: flow\ntitle: First\ntitle: Second`;
+    const result = parseMSVG(source);
+    expect(result.raw).toBeNull();
+    const dup = result.diagnostics.find((d) => d.code === DiagCodes.DUPLICATE_KEY);
+    expect(dup).toBeDefined();
+    expect(dup?.severity).toBe("error");
+    expect(dup?.line).toBeGreaterThan(0);
+    expect(dup?.column).toBeGreaterThan(0);
+  });
+
+  it("attaches a position to parse errors", () => {
+    const source = `type: flow\ntitle: First\ntitle: Second`;
+    const result = parseMSVG(source, { filePath: "dup.msvg.yml" });
+    const dup = result.diagnostics.find((d) => d.code === DiagCodes.DUPLICATE_KEY);
+    expect(dup?.filePath).toBe("dup.msvg.yml");
+    expect(dup?.line).toBe(3);
+  });
+
+  it("resolves anchors and aliases without errors", () => {
+    const source = `type: flow\ntitle: Anchors\nshared: &label hello\nalias: *label`;
+    const result = parseMSVG(source);
+    expect(result.diagnostics).toHaveLength(0);
+    expect(result.raw).toMatchObject({ shared: "hello", alias: "hello" });
+  });
 });

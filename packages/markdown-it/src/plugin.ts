@@ -5,7 +5,7 @@ import type MarkdownIt from "markdown-it";
 import type Token from "markdown-it/lib/token.mjs";
 import type { MSVGDiagnostic } from "@markdown-utils/msvg-core";
 import { parseAndValidate } from "@markdown-utils/msvg-core";
-import { renderSvg } from "@markdown-utils/msvg-svg";
+import { renderSvg, type ThemeInput, type ThemeResolveMode, type ThemeOutputMode, type ThemeBackground } from "@markdown-utils/msvg-svg";
 
 export interface MarkdownItMSVGOptions {
   output?: "asset" | "inline" | undefined;
@@ -14,6 +14,11 @@ export interface MarkdownItMSVGOptions {
   sourcePath?: string | undefined;
   diagnostics?: MSVGDiagnostic[] | undefined;
   emitFile?: ((filePath: string, contents: string) => void) | undefined;
+  urlOnly?: boolean | undefined;
+  theme?: ThemeInput | undefined;
+  themeMode?: ThemeResolveMode | undefined;
+  themeOutputMode?: ThemeOutputMode | undefined;
+  background?: ThemeBackground | undefined;
 }
 
 function escapeHtml(value: string): string {
@@ -67,8 +72,8 @@ function emitAsset(title: string, svg: string, options: MarkdownItMSVGOptions): 
   return publicUrl;
 }
 
-function imageHtml(src: string, title: string, caption: string | undefined, type: string): string {
-  const img = `<img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" loading="lazy" decoding="async">`;
+function imageHtml(src: string, alt: string, caption: string | undefined, type: string): string {
+  const img = `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">`;
   if (caption !== undefined && caption.trim().length > 0) {
     return `<figure class="msvg msvg-${escapeHtml(type)}">${img}<figcaption>${escapeHtml(caption)}</figcaption></figure>`;
   }
@@ -90,17 +95,33 @@ export function msvgMarkdownIt(md: MarkdownIt, options: MarkdownItMSVGOptions = 
       const message = parsed.diagnostics.map((diag) => `${diag.severity}: ${diag.message}`).join("\n");
       return `<pre class="msvg-error">${escapeHtml(message)}</pre>`;
     }
-    const rendered = renderSvg(parsed.diagram);
+    const rendered = renderSvg(parsed.diagram, {
+      theme: options.theme,
+      themeMode: options.themeMode,
+      themeOutputMode: options.themeOutputMode,
+      background: options.background,
+      idSalt: String(idx),
+    });
     diagnostics.push(...rendered.diagnostics);
     if (options.output === "inline") {
+      return rendered.svg;
+    }
+    const willWrite = options.emitFile !== undefined || options.outputDir !== undefined;
+    if (!willWrite && options.urlOnly !== true) {
+      diagnostics.push({
+        code: "MSVG_ASSET_NO_OUTPUT",
+        severity: "error",
+        message: "asset output requires outputDir, emitFile, or urlOnly; rendered inline to avoid a broken image reference",
+        filePath: options.sourcePath,
+      });
       return rendered.svg;
     }
     const source = slugify((options.sourcePath ?? "inline").replace(/\.[^.]+$/, ""));
     const name = `${slugify(parsed.diagram.title)}-${hashContent(rendered.svg)}.svg`;
     const publicUrl = `${normalizePublicPath(options.publicPath)}/${source}/${name}`;
-    if (options.emitFile !== undefined || options.outputDir !== undefined) {
+    if (willWrite) {
       emitAsset(parsed.diagram.title, rendered.svg, options);
     }
-    return imageHtml(publicUrl, parsed.diagram.title, parsed.diagram.caption, parsed.diagram.type);
+    return imageHtml(publicUrl, rendered.altText, parsed.diagram.caption, parsed.diagram.type);
   };
 }

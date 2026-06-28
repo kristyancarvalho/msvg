@@ -1,24 +1,30 @@
-name: Feature Suggestion
-description: Suggest a feature or improvement
-title: "[ENHANCEMENT] "
+name: Enhancement
+description: Propose new or improved product behavior, public API, CLI behavior, integrations, or rendering
+title: "enhancement/<area>: "
 labels: ["enhancement"]
 body:
   - type: dropdown
     id: area
     attributes:
       label: Area
-      description: Which part of the project should be improved?
+      description: Which part of MSVG should be improved?
       options:
-        - config
-        - parser
+        - repo
+        - core
+        - svg
         - layout
-        - render
-        - ui
-        - input
-        - watch
+        - theme
+        - remark
+        - markdown-it
+        - astro
+        - cli
+        - docker
+        - examples
+        - test
         - docs
-        - packaging
+        - accessibility
         - release
+        - ci
         - other
     validations:
       required: true
@@ -26,9 +32,8 @@ body:
   - type: textarea
     id: problem
     attributes:
-      label: Problem / motivation
-      description: What issue or limitation does this improve?
-      placeholder: Explain why this change is useful.
+      label: Problem or goal
+      description: What limitation or need does this address?
     validations:
       required: true
 
@@ -37,16 +42,22 @@ body:
     attributes:
       label: Proposed change
       description: What should be implemented or changed?
-      placeholder: Describe the feature or improvement.
     validations:
       required: true
 
   - type: textarea
-    id: alternatives
+    id: scope
     attributes:
-      label: Alternatives considered
-      description: Did you consider other approaches?
-      placeholder: Optional.
+      label: Scope
+      description: What is included in this work?
+    validations:
+      required: true
+
+  - type: textarea
+    id: outofscope
+    attributes:
+      label: Out of scope
+      description: What is explicitly not included?
 
   - type: textarea
     id: acceptance
@@ -61,8 +72,21 @@ body:
       required: true
 
   - type: textarea
-    id: notes
+    id: validation
     attributes:
-      label: Notes
-      description: Optional implementation details, references, or edge cases.
-      placeholder: Add any extra context here.
+      label: Validation commands
+      description: Docker commands that confirm the work.
+      value: |
+        docker compose run --rm msvg npm run check
+        docker compose run --rm msvg npm run test
+        docker compose run --rm msvg npm run build
+        docker compose run --rm msvg npm run verify
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: milestone
+    attributes:
+      label: Related release milestone
+      placeholder: v0.2.0

@@ -37,11 +37,16 @@ console.log(String(file));
 |---|---|
 | `output` | `"asset"` writes an SVG file and inserts an image reference. `"inline"` embeds the SVG in the HTML. |
 | `outputDir` | Directory where asset files are written. |
+| `emitFile` | Callback `(fileName, svg)` that writes the asset, as an alternative to `outputDir`. |
+| `urlOnly` | In asset mode, emit a URL-only image reference even without a write target (you are responsible for placing the file). |
 | `publicPath` | Public URL prefix used in generated image references. |
 | `sourcePath` | Source file path used for naming and diagnostics. |
+| `theme`, `themeMode`, `themeOutputMode`, `background` | Theming options passed through to the renderer. |
 | `diagnostics` | An array that collects diagnostics produced during processing. |
 
 Asset mode is the safe default for blogs and feeds. Filenames are deterministic and content-hashed, so the same diagram always produces the same file.
+
+In asset mode you must provide a write target (`outputDir` or `emitFile`). If neither is set and `urlOnly` is not enabled, the plugin reports an `MSVG_ASSET_NO_OUTPUT` error and falls back to inline SVG instead of emitting a broken image reference.
 
 ## Behavior
 

@@ -40,14 +40,16 @@ Use the Docker workflow defined by the repository instead. Preferred commands:
 
 ```bash
 docker compose build
-docker compose run --rm app npm install
-docker compose run --rm app npm run check
-docker compose run --rm app npm run test
-docker compose run --rm app npm run build
-docker compose run --rm app npm run verify
+docker compose run --rm msvg npm install
+docker compose run --rm msvg npm run check
+docker compose run --rm msvg npm run test
+docker compose run --rm msvg npm run build
+docker compose run --rm msvg npm run verify
 ```
 
 If a new command is required, add it to the project scripts first and run it through Docker.
+
+The one documented exception is the npm publish workflow (`.github/workflows/publish.yml`), which runs on the GitHub Actions host because npm trusted publishing relies on OIDC (`id-token: write`), available only to the host runner. It still runs the full `verify` gate before publishing.
 
 ## Issue Workflow
 
@@ -239,10 +241,10 @@ Required test layers:
 Minimum validation before merge:
 
 ```bash
-docker compose run --rm app npm run check
-docker compose run --rm app npm run test
-docker compose run --rm app npm run build
-docker compose run --rm app npm run verify
+docker compose run --rm msvg npm run check
+docker compose run --rm msvg npm run test
+docker compose run --rm msvg npm run build
+docker compose run --rm msvg npm run verify
 ```
 
 If any command fails, do not merge.
@@ -345,10 +347,10 @@ Implements issue_<id>
 
 ## Validation
 
-- [ ] `docker compose run --rm app npm run check`
-- [ ] `docker compose run --rm app npm run test`
-- [ ] `docker compose run --rm app npm run build`
-- [ ] `docker compose run --rm app npm run verify`
+- [ ] `docker compose run --rm msvg npm run check`
+- [ ] `docker compose run --rm msvg npm run test`
+- [ ] `docker compose run --rm msvg npm run build`
+- [ ] `docker compose run --rm msvg npm run verify`
 
 ## Checklist
 

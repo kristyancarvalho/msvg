@@ -11,12 +11,35 @@ edges:
   - a -> b`;
 
 describe("msvgMarkdownIt", () => {
-  it("renders asset image HTML by default", () => {
+  it("renders asset image HTML when files are written", () => {
     const md = new MarkdownIt();
-    msvgMarkdownIt(md, { publicPath: "/images", sourcePath: "post.md" });
+    const emitted: string[] = [];
+    msvgMarkdownIt(md, { publicPath: "/images", sourcePath: "post.md", emitFile: (filePath) => emitted.push(filePath) });
     const html = md.render("```msvg\n" + diagram + "\n```");
     expect(html).toContain("<img");
     expect(html).toContain("/images/post/pipeline-");
+    expect(emitted[0]).toContain("pipeline-");
+  });
+
+  it("renders asset image HTML in explicit urlOnly mode without writing files", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "asset", publicPath: "/images", sourcePath: "post.md", urlOnly: true });
+    const env: { msvgDiagnostics?: Array<{ code: string }> } = {};
+    const html = md.render("```msvg\n" + diagram + "\n```", env);
+    expect(html).toContain("<img");
+    expect(html).toContain("/images/post/pipeline-");
+    expect((env.msvgDiagnostics ?? []).some((d) => d.code === "MSVG_ASSET_NO_OUTPUT")).toBe(false);
+  });
+
+  it("never emits a broken image when asset mode has no output target", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "asset", publicPath: "/images", sourcePath: "post.md" });
+    const env: { msvgDiagnostics?: Array<{ code: string; severity: string }> } = {};
+    const html = md.render("```msvg\n" + diagram + "\n```", env);
+    expect(html).not.toContain("<img");
+    expect(html).toContain("<svg");
+    const diag = (env.msvgDiagnostics ?? []).find((d) => d.code === "MSVG_ASSET_NO_OUTPUT");
+    expect(diag?.severity).toBe("error");
   });
 
   it("renders inline SVG when configured", () => {
@@ -25,6 +48,21 @@ describe("msvgMarkdownIt", () => {
     const html = md.render("```msvg\n" + diagram + "\n```");
     expect(html).toContain("<svg");
     expect(html).toContain("<title");
+  });
+
+  it("threads theme output mode into inline rendering", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "inline", themeOutputMode: "css-variables" });
+    const html = md.render("```msvg\n" + diagram + "\n```");
+    expect(html).toContain("<style");
+    expect(html).toContain("var(--msvg-");
+  });
+
+  it("threads a dark theme into inline rendering", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "inline", theme: "dark" });
+    const html = md.render("```msvg\n" + diagram + "\n```");
+    expect(html).not.toContain("#faf9f7");
   });
 
   it("keeps non-msvg fences on the default path", () => {
@@ -42,5 +80,22 @@ describe("msvgMarkdownIt", () => {
     const html = md.render("```msvg\ntitle: Missing type\n```", env);
     expect(html).toContain("msvg-error");
     expect(env.msvgDiagnostics?.length).toBeGreaterThan(0);
+  });
+
+  it("uses the diagram description as image alt text", () => {
+    const md = new MarkdownIt();
+    const described = "type: flow\ntitle: Pipeline\ndescription: A described pipeline\nnodes:\n  a: Start\n  b: End\nedges:\n  - a -> b";
+    msvgMarkdownIt(md, { publicPath: "/images", sourcePath: "post.md", emitFile: () => {} });
+    const html = md.render("```msvg\n" + described + "\n```");
+    expect(html).toContain('alt="A described pipeline"');
+  });
+
+  it("gives same-title inline diagrams unique element ids", () => {
+    const md = new MarkdownIt();
+    msvgMarkdownIt(md, { output: "inline" });
+    const html = md.render("```msvg\n" + diagram + "\n```\n\n```msvg\n" + diagram + "\n```");
+    const ids = [...html.matchAll(/id="([^"]*-title)"/g)].map((m) => m[1]);
+    expect(ids.length).toBe(2);
+    expect(ids[0]).not.toBe(ids[1]);
   });
 });

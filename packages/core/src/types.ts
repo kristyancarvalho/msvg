@@ -25,6 +25,7 @@ export interface DiagramBase {
   title: string;
   description?: string | undefined;
   caption?: string | undefined;
+  alt?: string | undefined;
   theme?: string | Record<string, string> | undefined;
   id?: string | undefined;
 }
@@ -125,7 +126,13 @@ export interface SequenceDiagram extends DiagramBase {
   messages: SequenceMessage[];
 }
 
-export type EventStatus = "past" | "current" | "future" | "risk" | "done";
+export type EventStatus =
+  | "past"
+  | "current"
+  | "future"
+  | "risk"
+  | "done"
+  | "blocked";
 
 export interface TimelineEvent {
   at: string;
@@ -140,13 +147,17 @@ export interface TimelineDiagram extends DiagramBase {
 }
 
 export type ComponentKind =
+  | "default"
   | "client"
   | "service"
   | "storage"
+  | "database"
+  | "queue"
   | "external"
   | "build"
   | "content"
-  | "output";
+  | "output"
+  | "user";
 
 export type ArchitectureDirection = "LR" | "RL" | "TB" | "BT";
 
@@ -187,7 +198,6 @@ export type DiagramDocument =
 
 export interface ParseOptions {
   filePath?: string | undefined;
-  allowAnchors?: boolean | undefined;
 }
 
 export interface ParseResult {

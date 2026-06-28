@@ -246,11 +246,8 @@ export function renderFlow(
   const markerId = safeSvgId(diagramId, "arrow");
 
   const allBoxes = [...boxMap.values()];
-  const totalW = allBoxes.reduce((max, b) => Math.max(max, b.x + b.w + PAD), 0);
-  const totalH = allBoxes.reduce((max, b) => Math.max(max, b.y + b.h + PAD), 0);
-  const captionH = diagram.caption ? FONT_SIZE * LINE_HEIGHT + 12 : 0;
-  const svgW = Math.max(totalW, 400);
-  const svgH = totalH + captionH;
+  let labelMaxX = 0;
+  let labelMaxY = 0;
 
   const defs = `<defs>${arrowMarker(markerId, theme.borderStrong)}</defs>`;
 
@@ -267,13 +264,29 @@ export function renderFlow(
       const my = (fromBox.y + fromBox.h / 2 + toBox.y + toBox.h / 2) / 2;
       const tw = estimateTextWidth(e.label, DESC_FONT_SIZE) + 8;
       const th = DESC_FONT_SIZE * LINE_HEIGHT + 4;
+      const rx = Math.max(2, mx - tw / 2);
+      const ry = Math.max(2, my - th / 2);
+      labelMaxX = Math.max(labelMaxX, rx + tw);
+      labelMaxY = Math.max(labelMaxY, ry + th);
       labelEl =
-        `<rect x="${mx - tw / 2}" y="${my - th / 2}" width="${tw}" height="${th}" rx="4" fill="${escapeAttr(theme.background)}" opacity="0.85"/>` +
+        `<rect x="${rx}" y="${ry}" width="${tw}" height="${th}" rx="4" fill="${escapeAttr(theme.background)}" opacity="0.85"/>` +
         `<text x="${mx}" y="${my + DESC_FONT_SIZE / 2}" text-anchor="middle" font-size="${DESC_FONT_SIZE}" font-family="${escapeAttr(theme.fontFamily)}" fill="${escapeAttr(theme.textMuted)}">${escapeXml(e.label)}</text>`;
     }
 
     return path + labelEl;
   }).join("");
+
+  const totalW = Math.max(
+    allBoxes.reduce((max, b) => Math.max(max, b.x + b.w + PAD), 0),
+    labelMaxX + PAD
+  );
+  const totalH = Math.max(
+    allBoxes.reduce((max, b) => Math.max(max, b.y + b.h + PAD), 0),
+    labelMaxY + PAD
+  );
+  const captionH = diagram.caption ? FONT_SIZE * LINE_HEIGHT + 12 : 0;
+  const svgW = Math.max(totalW, 400);
+  const svgH = totalH + captionH;
 
   const nodeEls = diagram.nodes.map((n) => {
     const box = boxMap.get(n.id);

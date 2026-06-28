@@ -11,11 +11,17 @@ export interface AssetOptions {
   fileName?: FileNameMode | undefined;
   sourcePath?: string | undefined;
   emitFile?: ((filePath: string, contents: string) => void | Promise<void>) | undefined;
+  urlOnly?: boolean | undefined;
 }
 
 export interface AssetReference {
   filePath: string;
   publicUrl: string;
+  written: boolean;
+}
+
+export function willEmitAsset(options: AssetOptions): boolean {
+  return options.emitFile !== undefined || options.outputDir !== undefined;
 }
 
 export function hashContent(value: string): string {
@@ -84,8 +90,10 @@ export async function emitAsset(title: string, svg: string, options: AssetOption
   const relativePath = assertSafeRelativePath(`${source}/${name}`);
   const publicUrl = `${normalizePublicPath(options.publicPath)}/${relativePath}`;
   const filePath = join(options.outputDir ?? "public/msvg", ...relativePath.split("/"));
+  let written = false;
   if (options.emitFile !== undefined) {
     await options.emitFile(filePath, svg);
+    written = true;
   } else if (options.outputDir !== undefined) {
     const rel = relative(options.outputDir, filePath);
     if (rel.startsWith("..") || rel.split(sep).includes("..")) {
@@ -93,12 +101,13 @@ export async function emitAsset(title: string, svg: string, options: AssetOption
     }
     await mkdir(dirname(filePath), { recursive: true });
     await writeFile(filePath, svg, "utf8");
+    written = true;
   }
-  return { filePath, publicUrl };
+  return { filePath, publicUrl, written };
 }
 
-export function imageHtml(src: string, title: string, caption?: string | undefined, diagramType?: string | undefined): string {
-  const img = `<img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" loading="lazy" decoding="async">`;
+export function imageHtml(src: string, alt: string, caption?: string | undefined, diagramType?: string | undefined): string {
+  const img = `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async">`;
   if (caption !== undefined && caption.trim().length > 0) {
     return `<figure class="msvg msvg-${escapeHtml(diagramType ?? "diagram")}">${img}<figcaption>${escapeHtml(caption)}</figcaption></figure>`;
   }

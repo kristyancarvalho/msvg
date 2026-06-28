@@ -1,6 +1,6 @@
 {
   "name": "@markdown-utils/msvg-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MSVG command-line interface",
   "license": "MIT",
   "author": "Kristyan Carvalho",
@@ -52,8 +52,8 @@
     "test:snapshots": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@markdown-utils/msvg-core": "^0.1.0",
-    "@markdown-utils/msvg-svg": "^0.1.0",
+    "@markdown-utils/msvg-core": "^0.2.0",
+    "@markdown-utils/msvg-svg": "^0.2.0",
     "commander": "^12.1.0",
     "glob": "^11.0.0"
   }

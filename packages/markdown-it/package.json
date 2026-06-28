@@ -1,6 +1,6 @@
 {
   "name": "@markdown-utils/msvg-markdown-it",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MSVG markdown-it plugin",
   "license": "MIT",
   "author": "Kristyan Carvalho",
@@ -35,7 +35,11 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --out-dir dist --clean",
     "check": "tsc --noEmit",
@@ -46,8 +50,8 @@
     "test:integration": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@markdown-utils/msvg-core": "^0.1.0",
-    "@markdown-utils/msvg-svg": "^0.1.0"
+    "@markdown-utils/msvg-core": "^0.2.0",
+    "@markdown-utils/msvg-svg": "^0.2.0"
   },
   "peerDependencies": {
     "markdown-it": ">=14"

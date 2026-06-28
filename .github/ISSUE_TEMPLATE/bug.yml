@@ -1,24 +1,30 @@
-name: Bug Report
-description: Report a bug
-title: "[BUG] "
+name: Bug
+description: Report incorrect behavior, a regression, invalid output, or a workflow failure
+title: "bug/<area>: "
 labels: ["bug"]
 body:
   - type: dropdown
     id: area
     attributes:
       label: Area
-      description: Which part of the project is affected?
+      description: Which part of MSVG is affected?
       options:
-        - config
-        - parser
+        - repo
+        - core
+        - svg
         - layout
-        - render
-        - ui
-        - input
-        - watch
+        - theme
+        - remark
+        - markdown-it
+        - astro
+        - cli
+        - docker
+        - examples
+        - test
         - docs
-        - packaging
+        - accessibility
         - release
+        - ci
         - other
     validations:
       required: true
@@ -26,9 +32,9 @@ body:
   - type: textarea
     id: description
     attributes:
-      label: Description
-      description: What happened?
-      placeholder: Something isn't working
+      label: Problem
+      description: What is broken and what is the impact?
+      placeholder: Describe the incorrect behavior.
     validations:
       required: true
 
@@ -36,7 +42,7 @@ body:
     id: steps
     attributes:
       label: Steps to reproduce
-      description: How can we reproduce the problem?
+      description: Provide the diagram source or commands needed to reproduce the problem.
       placeholder: |
         1. ...
         2. ...
@@ -49,7 +55,6 @@ body:
     attributes:
       label: Expected behavior
       description: What should have happened instead?
-      placeholder: Describe the expected result.
     validations:
       required: true
 
@@ -58,16 +63,22 @@ body:
     attributes:
       label: Actual behavior
       description: What happened instead?
-      placeholder: Describe the observed result.
     validations:
       required: true
 
   - type: textarea
-    id: logs
+    id: validation
     attributes:
-      label: Logs / output
-      description: Paste any error messages, stack traces, or screenshots.
+      label: Validation commands
+      description: Docker commands that should pass once this is fixed.
+      value: |
+        docker compose run --rm msvg npm run check
+        docker compose run --rm msvg npm run test
+        docker compose run --rm msvg npm run build
+        docker compose run --rm msvg npm run verify
       render: shell
+    validations:
+      required: true
 
   - type: textarea
     id: env
@@ -76,7 +87,12 @@ body:
       description: Share relevant environment details.
       placeholder: |
         OS:
-        Terminal:
-        rendermd version:
-        Go version:
-        Config:
+        Node version:
+        MSVG version:
+        Install method (npm package, source, Docker):
+
+  - type: input
+    id: milestone
+    attributes:
+      label: Related release milestone
+      placeholder: v0.2.0
