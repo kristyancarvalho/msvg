@@ -1,6 +1,7 @@
 export { extractMsvgFences } from "./fence-extractor.js";
 export type { MsvgFence } from "./fence-extractor.js";
-export { resolveInputFiles } from "./glob.js";
+export { resolveInputFiles, resolveInputs } from "./glob.js";
+export type { ResolvedInputs } from "./glob.js";
 export { assertInside, safeOutputPath } from "./path-safety.js";
 export { checkCommand } from "./commands/check.js";
 export type { CheckOptions, CommandResult } from "./commands/check.js";
